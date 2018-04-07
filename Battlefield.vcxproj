@@ -148,12 +148,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BattleField.cpp" />
+    <ClCompile Include="ConstructionYard.cpp" />
     <ClCompile Include="EasyGraphics.cpp" />
+    <ClCompile Include="IUnit.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BattleField.h" />
+    <ClInclude Include="ConstructionYard.h" />
     <ClInclude Include="EasyGraphics.h" />
+    <ClInclude Include="IUnit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

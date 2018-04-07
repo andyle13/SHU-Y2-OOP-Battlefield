@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Units">
+      <UniqueIdentifier>{32f63003-ece5-4fc1-a0c5-cfebc5705839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units">
+      <UniqueIdentifier>{eb8b960e-2e2c-4d94-8ad3-b40c6756cec2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -24,6 +30,12 @@
     <ClCompile Include="EasyGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IUnit.cpp">
+      <Filter>Source Files\Units</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstructionYard.cpp">
+      <Filter>Source Files\Units</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BattleField.h">
@@ -31,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="EasyGraphics.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IUnit.h">
+      <Filter>Header Files\Units</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstructionYard.h">
+      <Filter>Header Files\Units</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

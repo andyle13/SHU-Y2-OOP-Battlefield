@@ -1,4 +1,5 @@
 #include "BattleField.h"
+#include "ConstructionYard.h"
 
 // the index of each asset must align with the constant used to identify that particular unit, 
 // e.g. static const int DEFENCE_TURRET=3; means that the asset for the defence turret must be in index 3
@@ -19,12 +20,12 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
   currentcell={-1, -1}; // out of bounds
 
   // create two initial construction yard structures - I am using colour to determine which unit belongs to which player... a little bit of a fudge
-  noofunits=2;
-  units[0]=(UNIT*) malloc(sizeof(UNIT));
-  *units[0]={UNIT_ASSETS[CONSTRUCTION_YARD], 2, (CELLS_DOWN-2)/2, 2, 2, 1000, PLAYER_ONE_COLOUR};
+  noofunits = 2;
+  //units[0]=(IUnit*) malloc(sizeof(IUnit));
+  units.push_back(new ConstructionYard(UNIT_ASSETS[CONSTRUCTION_YARD], { 2, (CELLS_DOWN - 2) / 2 }, { 2, 2 }, 1000, PLAYER_ONE_COLOUR));
 
-  units[1]=(UNIT*) malloc(sizeof(UNIT));
-  *units[1]={UNIT_ASSETS[CONSTRUCTION_YARD], CELLS_ACROSS-4, (CELLS_DOWN-2)/2, 2, 2, 1000, PLAYER_TWO_COLOUR};
+  //units[1]=(IUnit*) malloc(sizeof(IUnit));
+  units.push_back(new ConstructionYard(UNIT_ASSETS[CONSTRUCTION_YARD], { CELLS_ACROSS - 4, (CELLS_DOWN - 2) / 2 }, { 2, 2 }, 1000, PLAYER_TWO_COLOUR));
 
   updatePlayArea();
 
@@ -37,8 +38,9 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 
 BattleField::~BattleField()
 {
-  for (int i=0; i<noofunits; i++)
-    free(units[i]);
+	std::list<IUnit*>::iterator it;
+	for (it = units.begin(); it != units.end(); it++)
+		free(*it);
 }
 
 void BattleField::onCreate()
@@ -55,8 +57,9 @@ void BattleField::onDraw()
   drawBitmap(L"artwork\\ground.bmp", 0, 0, CELLS_ACROSS*CELL_SIZE, CELLS_DOWN*CELL_SIZE);
 
   // Draw all the units
-  for (int i=0; i<noofunits; i++)
-    drawUnit(units[i]);
+  std::list<IUnit*>::iterator it;
+  for (it = units.begin(); it != units.end(); it++)
+	  drawUnit(*it);
 
   // Draw the current cell highlight if the mouse is over the game board
   if (currentcell.x>=0 && currentcell.y>=0)
@@ -65,10 +68,10 @@ void BattleField::onDraw()
     drawRectangle(currentcell.x*CELL_SIZE, currentcell.y*CELL_SIZE, CELL_SIZE, CELL_SIZE, false);
   }
 
-  if (selectedunit && selectedunit->filename==UNIT_ASSETS[SOLDIER])
+  if (selectedunit && selectedunit->GetFilename()==UNIT_ASSETS[SOLDIER])
   {
-    int dx=selectedunit->x-currentcell.x;
-    int dy=selectedunit->y-currentcell.y;
+    int dx=selectedunit->GetPosition().x-currentcell.x;
+    int dy=selectedunit->GetPosition().y-currentcell.y;
     
     bool valid=true;
     if (dx==0 && dy==0)
@@ -79,30 +82,30 @@ void BattleField::onDraw()
     }
     
     if (!valid)
-      drawWhiteCross(currentcell.x, currentcell.y, selectedunit->width, selectedunit->height);
+      drawWhiteCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
   }
 
   // draw the toplaceunit if there is one and the location is valid
-  if (toplaceunit && currentcell.x!=-1 && currentcell.x+toplaceunit->width<=CELLS_ACROSS && currentcell.y+toplaceunit->height<=CELLS_DOWN)
+  if (toplaceunit && currentcell.x != -1 
+	  && currentcell.x+toplaceunit->GetSize().width <= CELLS_ACROSS
+	  && currentcell.y+toplaceunit->GetSize().height <= CELLS_DOWN)
   {
-    toplaceunit->x=currentcell.x;
-    toplaceunit->y=currentcell.y;
+    toplaceunit->SetPosition(currentcell.x, currentcell.y);
     drawUnit(toplaceunit);
 
     // check to see if the unit can be placed here (i.e the play area is free)
     if (!canPlaceUnit(toplaceunit))
-      drawWhiteCross(toplaceunit->x, toplaceunit->y, toplaceunit->width, toplaceunit->height);
+      drawWhiteCross(toplaceunit->GetPosition().x, toplaceunit->GetPosition().y, toplaceunit->GetSize().width, toplaceunit->GetSize().height);
     else // check if location rules are valid
     {
       // some more horrible code, although this demo only allows you to place an armoury so it is valid, but attempt to replace this with cleaner code
-      if (toplaceunit->filename==UNIT_ASSETS[SOLDIER] || (toplaceunit->filename==UNIT_ASSETS[ARMOURY] && !canPlaceStructure(toplaceunit)))
+      if (toplaceunit->GetFilename() == UNIT_ASSETS[SOLDIER] || (toplaceunit->GetFilename() == UNIT_ASSETS[ARMOURY] && !canPlaceStructure(toplaceunit)))
       {
         // draw a white cross through the unit to indicate it cannot be placed here
-        drawWhiteCross(toplaceunit->x, toplaceunit->y, toplaceunit->width, toplaceunit->height);
+        drawWhiteCross(toplaceunit->GetPosition().x, toplaceunit->GetPosition().y, toplaceunit->GetSize().width, toplaceunit->GetSize().height);
       }
     }
   }
-
 
   drawStatus();
 
@@ -110,29 +113,30 @@ void BattleField::onDraw()
   EasyGraphics::onDraw();
 }
 
-bool BattleField::canPlaceUnit(const UNIT* unit)
+bool BattleField::canPlaceUnit(const IUnit* unit)
 {
-  for (int i=0; i<unit->width; i++)
-    for (int j=0; j<unit->height; j++)
-      if (playarea[unit->x+i][unit->y+j]) // use the pointer as true or false
+  for (int i=0; i < unit->GetSize().width; i++)
+    for (int j=0; j < unit->GetSize().height; j++)
+      if (playarea[unit->GetPosition().x + i][unit->GetPosition().y + j]) // use the pointer as true or false
         return false;
   return true;
 }
 
 // This method should be optimised with your OO-base class structure
-bool BattleField::canPlaceStructure(const UNIT* structure)
+bool BattleField::canPlaceStructure(const IUnit* structure)
 {
   // use centre locations and calculate the tolerance allowed based on width and 5 spaces
-  const float tx=structure->x+(structure->width/2.0f);
-  const float ty=structure->y+(structure->height/2.0f);
-  const float tolerance=(5.0f+structure->width)*(5.0f+structure->width);
+  const float tx=structure->GetPosition().x+(structure->GetSize().width/2.0f);
+  const float ty=structure->GetPosition().y+(structure->GetSize().height/2.0f);
+  const float tolerance=(5.0f+structure->GetSize().width)*(5.0f+structure->GetSize().width);
   
-  for (int u=0; u<noofunits; u++)
+  std::list<IUnit*>::iterator it;
+  for (it = units.begin(); it != units.end(); it++)
   {
-    if (units[u]->colour==structure->colour)
+    if ((*it)->GetColour() == structure->GetColour())
     {
-      const float cx=units[u]->x+(units[u]->width/2.0f);
-      const float cy=units[u]->y+(units[u]->height/2.0f);
+      const float cx=(*it)->GetPosition().x+((*it)->GetSize().width/2.0f);
+      const float cy=(*it)->GetPosition().y+((*it)->GetSize().height/2.0f);
       const float dx=tx-cx;
       const float dy=ty-cy;
       const float distsqr=(dx*dx)+(dy*dy);
@@ -143,19 +147,19 @@ bool BattleField::canPlaceStructure(const UNIT* structure)
   return false;
 }
 
-void BattleField::drawUnit(const UNIT* unit)
+void BattleField::drawUnit(const IUnit* unit)
 {
-  const int x=unit->x*CELL_SIZE;
-  const int y=unit->y*CELL_SIZE;
-  const int width=unit->width*CELL_SIZE;
-  const int height=unit->height*CELL_SIZE;
+  const int x=unit->GetPosition().x*CELL_SIZE;
+  const int y=unit->GetPosition().y*CELL_SIZE;
+  const int width=unit->GetSize().width*CELL_SIZE;
+  const int height=unit->GetSize().height*CELL_SIZE;
   if (unit==selectedunit)
     setPenColour(clGrey, 4);
   else
-    setPenColour(unit->colour, 2);
-  selectBackColour(unit->colour);
+    setPenColour(unit->GetColour(), 2);
+  selectBackColour(unit->GetColour());
   drawRectangle(x, y, width, height, true);
-  drawBitmap(unit->filename, x, y, width, height, 0x0000FF00);  // green is my transparent colour
+  drawBitmap(unit->GetFilename(), x, y, width, height, 0x0000FF00);  // green is my transparent colour
 }
 
 void BattleField::drawStatus()
@@ -174,19 +178,19 @@ void BattleField::drawStatus()
     int maxhealth;
     const char* name;
     const char* options;
-    if (selectedunit->filename==UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
+    if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
     {
       name="Construction Yard";
       options="1) Create Armoury\n2) Create Defence Wall\n3) Create Defence Turret";
       maxhealth=1000;
     }
-    else if (selectedunit->filename==UNIT_ASSETS[ARMOURY])
+    else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
     {
       name="Armoury"; 
       options="1) Create Solider\n2) Create Medic\n3) Create Mechanic\n4) Create Saboteur";
       maxhealth=200;
     }
-    else if (selectedunit->filename==UNIT_ASSETS[SOLDIER])
+    else if (selectedunit->GetFilename() == UNIT_ASSETS[SOLDIER])
     {
       name="Soldier"; 
       maxhealth=150;
@@ -199,8 +203,8 @@ void BattleField::drawStatus()
       options="Unknown";
     }
 
-    (*this) << "Player " << (selectedunit->colour==PLAYER_ONE_COLOUR?"1":"2") << ": " << name << "\n";
-    (*this) << "Health: " << selectedunit->health << " of " << maxhealth << "\n";
+    (*this) << "Player " << (selectedunit->GetColour() == PLAYER_ONE_COLOUR? "1" : "2") << ": " << name << "\n";
+    (*this) << "Health: " << selectedunit->GetHealth() << " of " << maxhealth << "\n";
     (*this) << options;
   }
   else
@@ -215,23 +219,23 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
   // some more nasty code due to the lack of OO-based classes
   if (selectedunit)
   {
-    if (selectedunit->filename==UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
+    if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
     {
       if (nChar=='1') // create armoury
       {
         // check sufficient funds
-        toplaceunit=(UNIT*) malloc(sizeof(UNIT));
-        *toplaceunit={UNIT_ASSETS[ARMOURY], currentcell.x, currentcell.y, 2, 2, 200, selectedunit->colour};
+        toplaceunit=(IUnit*) malloc(sizeof(IUnit));
+		//*toplaceunit = new Armoury(UNIT_ASSETS[ARMOURY], { currentcell.x, currentcell.y }, { 2, 2 }, 200, selectedunit->GetColour());
       }
       else
         MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
     }
-    else if (selectedunit->filename==UNIT_ASSETS[ARMOURY])
+    else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
     {
       if (nChar=='1') // create a soldier
       {
-        toplaceunit=(UNIT*) malloc(sizeof(UNIT));
-        *toplaceunit={UNIT_ASSETS[SOLDIER], currentcell.x, currentcell.y, 1, 1, 150, selectedunit->colour};
+        toplaceunit=(IUnit*) malloc(sizeof(IUnit));
+		//*toplaceunit = new Soldier(UNIT_ASSETS[SOLDIER], { currentcell.x, currentcell.y }, { 1, 1 }, 150, selectedunit->GetColour());
       }
       else
         MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
@@ -246,8 +250,8 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
   {
     if (canPlaceUnit(toplaceunit) && canPlaceStructure(toplaceunit))
     {
-      assert(noofunits<DEMO_MAX_UINTS);
-      units[noofunits++]=toplaceunit;
+      //assert(noofunits < units.max_size);
+      units.push_back(toplaceunit);
       addToPlayArea(toplaceunit);
       toplaceunit=NULL;
     }
@@ -295,6 +299,7 @@ void BattleField::updatePlayArea()
       playarea[i][j]=NULL;
 
   // Put the units onto the play area - using memory references to make it easier to manipulate the unit
-  for (int u=0; u<noofunits; u++)
-    addToPlayArea(units[u]);
+  std::list<IUnit*>::iterator it;
+  for (it = units.begin(); it != units.end(); it++)
+    addToPlayArea(*it);
 }
