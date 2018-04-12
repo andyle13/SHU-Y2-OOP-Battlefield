@@ -11,7 +11,7 @@ struct Size {
 class IUnit
 {
 public:
-	IUnit(const Position & p, int h);
+	IUnit(const Position & p, int h, const int c);
 	virtual ~IUnit() = 0;
 
 	virtual const Size & GetSize() const = 0;
@@ -26,5 +26,5 @@ public:
 
 protected:
 	Position position;
-	int health;
+	int health, colour;
 };

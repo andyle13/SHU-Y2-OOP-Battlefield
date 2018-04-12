@@ -19,6 +19,30 @@
     <Filter Include="Header Files\Units">
       <UniqueIdentifier>{eb8b960e-2e2c-4d94-8ad3-b40c6756cec2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Units\UnitBuilder">
+      <UniqueIdentifier>{3f135654-15ff-4341-8195-5df36f79f037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units\UnitBuilder">
+      <UniqueIdentifier>{89a29cd9-e32c-45e2-97fa-db757402ab97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units\Infantry">
+      <UniqueIdentifier>{39df782d-1561-4a51-a170-1ea0a35970e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units\Infantry\Attacker">
+      <UniqueIdentifier>{076b4911-abe4-43cc-ac42-13ee3d1f20d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units\Infantry\Healer">
+      <UniqueIdentifier>{58ba5729-4251-4215-b238-b7676648dcf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Units\Infantry">
+      <UniqueIdentifier>{650b11c9-be31-4faa-a9e0-512f8c769cb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Units\Infantry\Attacker">
+      <UniqueIdentifier>{e09ae6c2-2598-43dc-9588-bf3b63cb58a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Units\Infantry\Healer">
+      <UniqueIdentifier>{e94b6cef-f434-4fca-941e-35e2870eda4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -33,22 +57,76 @@
     <ClCompile Include="IUnit.cpp">
       <Filter>Source Files\Units</Filter>
     </ClCompile>
+    <ClCompile Include="Saboteur.cpp">
+      <Filter>Source Files\Units\Infantry\Attacker</Filter>
+    </ClCompile>
+    <ClCompile Include="Soldier.cpp">
+      <Filter>Source Files\Units\Infantry\Attacker</Filter>
+    </ClCompile>
+    <ClCompile Include="Mechanic.cpp">
+      <Filter>Source Files\Units\Infantry\Healer</Filter>
+    </ClCompile>
+    <ClCompile Include="Medic.cpp">
+      <Filter>Source Files\Units\Infantry\Healer</Filter>
+    </ClCompile>
+    <ClCompile Include="Armoury.cpp">
+      <Filter>Source Files\Units\UnitBuilder</Filter>
+    </ClCompile>
     <ClCompile Include="ConstructionYard.cpp">
-      <Filter>Source Files\Units</Filter>
+      <Filter>Source Files\Units\UnitBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitBuilder.cpp">
+      <Filter>Source Files\Units\UnitBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="Attacker.cpp">
+      <Filter>Source Files\Units\Infantry\Attacker</Filter>
+    </ClCompile>
+    <ClCompile Include="Infantry.cpp">
+      <Filter>Source Files\Units\Infantry</Filter>
+    </ClCompile>
+    <ClCompile Include="Healer.cpp">
+      <Filter>Source Files\Units\Infantry\Healer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IUnit.h">
+      <Filter>Header Files\Units</Filter>
+    </ClInclude>
     <ClInclude Include="BattleField.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Saboteur.h">
+      <Filter>Header Files\Units\Infantry\Attacker</Filter>
+    </ClInclude>
+    <ClInclude Include="Soldier.h">
+      <Filter>Header Files\Units\Infantry\Attacker</Filter>
+    </ClInclude>
+    <ClInclude Include="Medic.h">
+      <Filter>Header Files\Units\Infantry\Healer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mechanic.h">
+      <Filter>Header Files\Units\Infantry\Healer</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstructionYard.h">
+      <Filter>Header Files\Units\UnitBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Armoury.h">
+      <Filter>Header Files\Units\UnitBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Attacker.h">
+      <Filter>Header Files\Units\Infantry\Attacker</Filter>
+    </ClInclude>
+    <ClInclude Include="Infantry.h">
+      <Filter>Header Files\Units\Infantry</Filter>
     </ClInclude>
     <ClInclude Include="EasyGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IUnit.h">
-      <Filter>Header Files\Units</Filter>
+    <ClInclude Include="Healer.h">
+      <Filter>Header Files\Units\Infantry\Healer</Filter>
     </ClInclude>
-    <ClInclude Include="ConstructionYard.h">
-      <Filter>Header Files\Units</Filter>
+    <ClInclude Include="UnitBuilder.h">
+      <Filter>Header Files\Units\UnitBuilder</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

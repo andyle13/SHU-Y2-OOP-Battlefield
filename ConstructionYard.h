@@ -1,19 +1,18 @@
 #pragma once
-#include "IUnit.h"
+#include "UnitBuilder.h"
 
-class ConstructionYard : public IUnit
+class ConstructionYard : public UnitBuilder
 {
 public:
-	ConstructionYard(const wchar_t *f, const Position &p, Size s, int h, int c);
+	ConstructionYard(const wchar_t *f, const Position &p, int c);
 	~ConstructionYard();
 
 	const Size & GetSize() const;
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
+	IUnit * GetUnit(const wchar_t *f, const Position &p, const int c, char id);
 
 private:
 	const wchar_t* filename;
-	Size size;
-	int colour;
 };
 

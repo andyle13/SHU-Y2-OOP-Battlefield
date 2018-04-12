@@ -1,7 +1,7 @@
 #include "IUnit.h"
 
-IUnit::IUnit(const Position & p, int h)
-	: position(p), health(h) {}
+IUnit::IUnit(const Position & p, int h, const int c)
+	: position(p), health(h), colour(c) {}
 
 IUnit::~IUnit() {}
 

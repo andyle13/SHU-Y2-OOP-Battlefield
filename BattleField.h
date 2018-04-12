@@ -1,6 +1,7 @@
 #pragma once
 #include "EasyGraphics.h"
 #include "IUnit.h"
+#include "UnitBuilder.h"
 #include <list>
 
 // this IUnit structure is designed to give you some skeleton code to work with, however it is expected that you
@@ -41,10 +42,6 @@ private:
 
   // hold our battle units
   int noofunits;
-  /*
-	  static const int DEMO_MAX_UINTS=10; // you shouldn't have a limit on the number of units
-	  IUnit* units[DEMO_MAX_UINTS];
-  */
 
   std::list<IUnit*> units;
 
@@ -67,6 +64,7 @@ private:
   void addToPlayArea(IUnit* unit);  // places the unit onto the playarea
   bool canPlaceUnit(const IUnit* unit);  // checks to make sure the playarea is clear to place the unit
   bool canPlaceStructure(const IUnit* structure);  // checks to make sure a structure is within range of another
+  void createUnit(UnitBuilder * u, const Position & p, const wchar_t * f, const int c, char id);
 };
 
 inline void BattleField::addToPlayArea(IUnit* unit)
