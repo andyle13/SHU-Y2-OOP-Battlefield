@@ -7,6 +7,9 @@ ConstructionYard::ConstructionYard(const wchar_t *f, const Position &p, const in
 
 ConstructionYard::~ConstructionYard() {}
 
+const int ConstructionYard::GetMaxHealth() const { return maxhealth; }
+const std::string ConstructionYard::GetName() const { return name; }
+const std::string ConstructionYard::GetOption() const { return option; }
 const Size & ConstructionYard::GetSize() const { return size; }
 const wchar_t * ConstructionYard::GetFilename() const { return filename; }
 const int & ConstructionYard::GetColour() const { return IUnit::GetColour(); }

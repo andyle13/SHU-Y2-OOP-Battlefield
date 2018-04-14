@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "ConstructionYard.h"
 #include "Armoury.h"
+#include "Infantry.h"
 
 // the index of each asset must align with the constant used to identify that particular unit, 
 // e.g. static const int DEFENCE_TURRET=3; means that the asset for the defence turret must be in index 3
@@ -39,6 +40,8 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 		  p2->GetColour())
   );
 
+  unitID = 0;
+
   updatePlayArea();
 
   setImmediateDrawMode(false);
@@ -50,8 +53,8 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 BattleField::~BattleField()
 {
 	std::list<IUnit*>::iterator it;
-	//for (it = units.begin(); it != units.end(); it++)
-//		free(*it);
+	for (it = units.begin(); it != units.end(); it++)
+		free(*it);
 }
 
 void BattleField::onCreate()
@@ -62,66 +65,77 @@ void BattleField::onCreate()
 
 void BattleField::onDraw()
 {
-  clrscr(clBlack);
+	clrscr(clBlack);
 
-  // Draw the game area
-  drawBitmap(L"artwork\\ground.bmp", 0, 0, CELLS_ACROSS*CELL_SIZE, CELLS_DOWN*CELL_SIZE);
+	// Draw the game area
+	drawBitmap(L"artwork\\ground.bmp", 0, 0, CELLS_ACROSS*CELL_SIZE, CELLS_DOWN*CELL_SIZE);
 
-  // Draw all the units
-  std::list<IUnit*>::iterator it;
-  for (it = units.begin(); it != units.end(); it++)
-	  drawUnit(*it);
+	// Draw all the units
+	std::list<IUnit*>::iterator it;
+	for (it = units.begin(); it != units.end(); it++)
+		drawUnit(*it);
 
-  // Draw the current cell highlight if the mouse is over the game board
-  if (currentcell.x>=0 && currentcell.y>=0)
-  {
-    setPenColour(clWhite, 2);
-    drawRectangle(currentcell.x*CELL_SIZE, currentcell.y*CELL_SIZE, CELL_SIZE, CELL_SIZE, false);
-  }
+	// Draw the current cell highlight if the mouse is over the game board
+	if (currentcell.x>=0 && currentcell.y>=0)
+	{
+		setPenColour(clWhite, 2);
+		drawRectangle(currentcell.x*CELL_SIZE, currentcell.y*CELL_SIZE, CELL_SIZE, CELL_SIZE, false);
+	}
 
-  if (selectedunit && selectedunit->GetFilename()==UNIT_ASSETS[SOLDIER])
-  {
-    int dx=selectedunit->GetPosition().x-currentcell.x;
-    int dy=selectedunit->GetPosition().y-currentcell.y;
+	if (selectedunit && selectedunit == dynamic_cast<Infantry*>(selectedunit))
+	{
+		int dx=selectedunit->GetPosition().x-currentcell.x;
+		int dy=selectedunit->GetPosition().y-currentcell.y;
     
-    bool valid=true;
-    if (dx==0 && dy==0)
-      valid=false;
-    else
-    {
-      // ...
-    }
+		bool valid=true;
+		if (dx==0 && dy==0)
+			valid=false;
+		/*else
+		{
+			Infantry *inf = dynamic_cast<Infantry*>(selectedunit);
+			if (!(inf->IsValidMove({ currentcell.x, currentcell.y })))
+			{
+				inf->SetPosition(currentcell.x, currentcell.y);
+			}
+		}*/
     
-    if (!valid)
-      drawWhiteCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
-  }
+		if (!valid)
+			drawWhiteCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
+	}
 
-  // draw the toplaceunit if there is one and the location is valid
-  if (toplaceunit && currentcell.x != -1 
-	  && currentcell.x+toplaceunit->GetSize().width <= CELLS_ACROSS
-	  && currentcell.y+toplaceunit->GetSize().height <= CELLS_DOWN)
-  {
-    toplaceunit->SetPosition(currentcell.x, currentcell.y);
-    drawUnit(toplaceunit);
+	// draw the toplaceunit if there is one and the location is valid
+	if (toplaceunit && currentcell.x != -1 
+		&& currentcell.x+toplaceunit->GetSize().width <= CELLS_ACROSS
+		&& currentcell.y+toplaceunit->GetSize().height <= CELLS_DOWN)
+	{
+		toplaceunit->SetPosition(currentcell.x, currentcell.y);
+		drawUnit(toplaceunit);
 
-    // check to see if the unit can be placed here (i.e the play area is free)
-    if (!canPlaceUnit(toplaceunit))
-      drawWhiteCross(toplaceunit->GetPosition().x, toplaceunit->GetPosition().y, toplaceunit->GetSize().width, toplaceunit->GetSize().height);
-    else // check if location rules are valid
-    {
-      // some more horrible code, although this demo only allows you to place an armoury so it is valid, but attempt to replace this with cleaner code
-      if (toplaceunit->GetFilename() == UNIT_ASSETS[SOLDIER] || (toplaceunit->GetFilename() == UNIT_ASSETS[ARMOURY] && !canPlaceStructure(toplaceunit)))
-      {
-        // draw a white cross through the unit to indicate it cannot be placed here
-        drawWhiteCross(toplaceunit->GetPosition().x, toplaceunit->GetPosition().y, toplaceunit->GetSize().width, toplaceunit->GetSize().height);
-      }
-    }
-  }
+		// check to see if the unit can be placed here (i.e the play area is free)
+		if (!canPlaceUnit(toplaceunit))
+			drawWhiteCross(toplaceunit->GetPosition().x,
+				toplaceunit->GetPosition().y,
+				toplaceunit->GetSize().width,
+				toplaceunit->GetSize().height
+			);
+		else // check if location rules are valid
+		{
+			if (!canPlaceUnit(toplaceunit) && !canPlaceStructure(toplaceunit))
+			{
+				// draw a white cross through the unit to indicate it cannot be placed here
+				drawWhiteCross(toplaceunit->GetPosition().x,
+					toplaceunit->GetPosition().y,
+					toplaceunit->GetSize().width,
+					toplaceunit->GetSize().height
+				);
+			}
+		}
+	}
 
-  drawStatus();
+	drawStatus();
 
-  // immediate graphics draw has been disabled so we need to call the onDraw method in the EasyGraphics base-class to flush the updates to the screen
-  EasyGraphics::onDraw();
+	// immediate graphics draw has been disabled so we need to call the onDraw method in the EasyGraphics base-class to flush the updates to the screen
+	EasyGraphics::onDraw();
 }
 
 bool BattleField::canPlaceUnit(const IUnit* unit)
@@ -180,61 +194,11 @@ void BattleField::drawStatus()
   selectTextColour(clWhite);
   selectBackColour(clBlack);
 
-  // this is getting into some horrible code because OO classes aren't being used in this skeleton project
-  // so rework once you have implemented an OO design for the units - note, as it is a skeleton project
-  // not all units have values here either
   if (selectedunit)
   {
-
-    int maxhealth;
-    const char* name;
-    const char* options;
-    if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
-    {
-      name="Construction Yard";
-      options="1) Create Armoury\n2) Create Defence Wall\n3) Create Defence Turret";
-      maxhealth=1000;
-    }
-    else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
-    {
-      name="Armoury"; 
-      options="1) Create Soldier\n2) Create Medic\n3) Create Mechanic\n4) Create Saboteur";
-      maxhealth=200;
-    }
-    else if (selectedunit->GetFilename() == UNIT_ASSETS[SOLDIER])
-    {
-      name="Soldier"; 
-      maxhealth=150;
-      options="Move soldier or right-click to deselect";
-    }
-	else if (selectedunit->GetFilename() == UNIT_ASSETS[MEDIC])
-	{
-		name = "Medic";
-		maxhealth = 60;
-		options = "Move medic or right-click to deselect";
-	}
-	else if (selectedunit->GetFilename() == UNIT_ASSETS[MECHANIC])
-	{
-		name = "Mechanic";
-		maxhealth = 60;
-		options = "Move mechanic or right-click to deselect";
-	}
-	else if (selectedunit->GetFilename() == UNIT_ASSETS[SABOTEUR])
-	{
-		name = "Saboteur";
-		maxhealth = 100;
-		options = "Move saboteur or right-click to deselect";
-	}
-    else
-    {
-      name="Unknown";
-      maxhealth=0;
-      options="Unknown";
-    }
-
-    (*this) << "Player " << (selectedunit->GetColour() == PLAYER_ONE_COLOUR? "1" : "2") << ": " << name << "\n";
-    (*this) << "Health: " << selectedunit->GetHealth() << " of " << maxhealth << "\n";
-    (*this) << options;
+    (*this) << "Player " << (selectedunit->GetColour() == PLAYER_ONE_COLOUR? "1" : "2") << ": " << selectedunit->GetName() << "\n";
+    (*this) << "Health: " << selectedunit->GetHealth() << " of " << selectedunit->GetMaxHealth() << "\n";
+	(*this) << selectedunit->GetOption() << "\n";
   }
   else
   {
@@ -300,6 +264,21 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				(char) nChar
 			);
 		}
+		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
+			Infantry *movingunit = dynamic_cast<Infantry*>(selectedunit);
+			switch (nChar) {
+			case '1':
+				// deallocate the unit from its position to move
+				toplaceunit = movingunit;
+				playarea[currentcell.x][currentcell.y] = NULL;
+				break;
+			case '2':
+				// attack or heal
+				break;
+			default:
+				break;
+			}
+		}
 	onDraw();
 	}
 }
@@ -311,24 +290,22 @@ void BattleField::createUnit(UnitBuilder * u, const Position & p, const wchar_t 
 
 void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 {
-  if (toplaceunit)
-  {
-    if (canPlaceUnit(toplaceunit) && canPlaceStructure(toplaceunit))
-    {
-      assert(noofunits < units.max_size());
-      //units.push_back(toplaceunit);
-      addToPlayArea(toplaceunit);
-      toplaceunit=NULL;
-    }
-    else
-      MessageBox(getHWND(), L"Cannot place unit there", L"BattleField", MB_ICONERROR);
-  }
-  else
-  {
-    if (currentcell.x>=0 && currentcell.y>=0)
-      selectedunit=playarea[currentcell.x][currentcell.y];
-  }
-  onDraw();
+	if (toplaceunit)
+	{
+		if (canPlaceUnit(toplaceunit) && canPlaceStructure(toplaceunit)) {
+			assert(noofunits < units.max_size());
+			addToPlayArea(toplaceunit);
+			toplaceunit = NULL;
+		}
+		else
+			MessageBox(getHWND(), L"Cannot place unit there", L"BattleField", MB_ICONERROR);
+	}
+	else
+	{
+		if (currentcell.x>=0 && currentcell.y>=0)
+			selectedunit = playarea[currentcell.x][currentcell.y];
+	}
+	onDraw();
 }
 
 void BattleField::onRButtonDown(UINT nFlags, int x, int y)

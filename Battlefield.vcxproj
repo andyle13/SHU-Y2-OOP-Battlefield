@@ -161,6 +161,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Saboteur.cpp" />
     <ClCompile Include="Soldier.cpp" />
+    <ClCompile Include="Structure.cpp" />
     <ClCompile Include="UnitBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Saboteur.h" />
     <ClInclude Include="Soldier.h" />
+    <ClInclude Include="Structure.h" />
     <ClInclude Include="UnitBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -16,3 +16,7 @@ void IUnit::SetPosition(int setX, int setY) {
 void IUnit::SetHealth(int changeHealth) {
 	health = changeHealth;
 }
+
+void IUnit::UpdateHealth(int changeHealth) {
+	health += changeHealth;
+}

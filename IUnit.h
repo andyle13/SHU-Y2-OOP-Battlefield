@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 struct Position {
 	int x, y;
@@ -16,12 +17,16 @@ public:
 
 	virtual const Size & GetSize() const = 0;
 	virtual const wchar_t * GetFilename() const = 0;
+	virtual const int GetMaxHealth() const = 0;
+	virtual const std::string GetName() const = 0;
+	virtual const std::string GetOption() const = 0;
 
 	virtual const Position & GetPosition() const;
 	virtual const int & GetHealth() const;
 	virtual const int & GetColour() const;
 	void SetPosition(int x, int y);
 	void SetHealth(int changeHealth);
+	void UpdateHealth(int changeHealth);
 
 protected:
 	Position position;

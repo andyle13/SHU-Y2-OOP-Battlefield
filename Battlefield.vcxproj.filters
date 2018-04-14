@@ -90,6 +90,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Structure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IUnit.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files\Units\UnitBuilder</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Structure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

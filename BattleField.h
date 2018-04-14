@@ -21,7 +21,7 @@ protected:
   virtual void onChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 private:
-  static const int CELL_SIZE=30;  // size of a cell will be 20 pixels
+  static const int CELL_SIZE=20;  // size of a cell will be 20 pixels
   static const int CELLS_ACROSS=35; // number of cells in the x-direction
   static const int CELLS_DOWN=20; // number of cells in the y-direction
   static const int PLAYER_ONE_COLOUR=clDarkRed;
@@ -38,7 +38,7 @@ private:
   static const int NO_OF_UNITS=8;
 
   static const wchar_t* UNIT_ASSETS[NO_OF_UNITS]; // stores the filenames of the bitmaps used for the different units
-
+  int unitID;
   // Players
   //Player p1;
   //Player p2;

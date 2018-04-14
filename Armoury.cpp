@@ -9,6 +9,9 @@ Armoury::Armoury(const wchar_t *f, const Position &p, const int c)
 
 Armoury::~Armoury() {}
 
+const int Armoury::GetMaxHealth() const { return maxhealth; }
+const std::string Armoury::GetName() const { return name; }
+const std::string Armoury::GetOption() const { return option; }
 const Size & Armoury::GetSize() const { return size; }
 const wchar_t * Armoury::GetFilename() const { return filename; }
 const int & Armoury::GetColour() const { return IUnit::GetColour(); }

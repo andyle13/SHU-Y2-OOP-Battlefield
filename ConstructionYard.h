@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "UnitBuilder.h"
 
 class ConstructionYard : public UnitBuilder
@@ -7,6 +8,10 @@ public:
 	ConstructionYard(const wchar_t *f, const Position &p, const int c);
 	~ConstructionYard();
 
+	const int GetMaxHealth() const;
+	const std::string GetName() const;
+	const std::string GetOption() const;
+
 	const Size & GetSize() const;
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
@@ -14,6 +19,8 @@ public:
 
 private:
 	const wchar_t* filename;
-	//const int color;
+	const int maxhealth = 1000;
+	const std::string name = "Construction Yard";
+	const std::string option = "1) Create Armoury\n2) Create Defence Wall\n3) Create Defence Turret";
 };
 

@@ -7,6 +7,8 @@ public:
 	~Infantry();
 
 	virtual void RestoreMovements() = 0;
+	bool IsValidMove(Position p);
+	int GetMoves();
 
 protected:
 	int moves;
