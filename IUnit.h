@@ -11,20 +11,20 @@ struct Size {
 class IUnit
 {
 public:
-	IUnit(const Position & p, int h, const int c);
+	IUnit(const Position & p, const int c, int h);
 	virtual ~IUnit() = 0;
 
 	virtual const Size & GetSize() const = 0;
 	virtual const wchar_t * GetFilename() const = 0;
-	virtual const int & GetColour() const = 0;
 
 	virtual const Position & GetPosition() const;
 	virtual const int & GetHealth() const;
-
+	virtual const int & GetColour() const;
 	void SetPosition(int x, int y);
 	void SetHealth(int changeHealth);
 
 protected:
 	Position position;
-	int health, colour;
+	int health;
+	const int colour;
 };

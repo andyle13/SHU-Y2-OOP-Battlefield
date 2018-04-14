@@ -1,4 +1,5 @@
 #include "BattleField.h"
+#include "Player.h"
 #include "ConstructionYard.h"
 #include "Armoury.h"
 
@@ -22,17 +23,20 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 
   // create two initial construction yard structures - I am using colour to determine which unit belongs to which player... a little bit of a fudge
   noofunits = 2;
+  Player *p1 = new Player("Player 1", PLAYER_ONE_COLOUR);
+  Player *p2 = new Player("Player 2", PLAYER_TWO_COLOUR);
+
   units.push_back(
 	  new ConstructionYard(
 		  UNIT_ASSETS[CONSTRUCTION_YARD],
 		  { 2, (CELLS_DOWN - 2) / 2 },
-		  PLAYER_ONE_COLOUR)
+		  p1->GetColour())
   );
   units.push_back(
 	  new ConstructionYard(
 		  UNIT_ASSETS[CONSTRUCTION_YARD], 
 		  { CELLS_ACROSS - 4, (CELLS_DOWN - 2) / 2 }, 
-		  PLAYER_TWO_COLOUR)
+		  p2->GetColour())
   );
 
   updatePlayArea();
@@ -46,8 +50,8 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 BattleField::~BattleField()
 {
 	std::list<IUnit*>::iterator it;
-	for (it = units.begin(); it != units.end(); it++)
-		free(*it);
+	//for (it = units.begin(); it != units.end(); it++)
+//		free(*it);
 }
 
 void BattleField::onCreate()
@@ -241,63 +245,63 @@ void BattleField::drawStatus()
 
 void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-  if (selectedunit)
-  {
-	  int unitID;
-    if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
-    {
-		switch (nChar)
+	if (selectedunit)
+	{
+		int unitID;
+		if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
 		{
-		case '1': // create an armoury
-			unitID = ARMOURY;
-			break;
-		case '2': // create a defence wall
-			unitID = DEFENCE_WALL;
-			break;
-		case '3': // create a defence turret
-			unitID = DEFENCE_TURRET;
-			break;
-		default:
-			MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
-			break;
-		}
+			switch (nChar)
+			{
+			case '1': // create an armoury
+				unitID = ARMOURY;
+				break;
+			case '2': // create a defence wall
+				unitID = DEFENCE_WALL;
+				break;
+			case '3': // create a defence turret
+				unitID = DEFENCE_TURRET;
+				break;
+			default:
+				MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
+				break;
+			}
 
-	  createUnit(dynamic_cast<ConstructionYard*>(selectedunit),
-		  { currentcell.x, currentcell.y },
-		  UNIT_ASSETS[ARMOURY],
-		  selectedunit->GetColour(),
-		  (char) nChar
-	  );
-    }
-    else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
-    {
-	  switch (nChar) {
-	  case '1': // create a soldier
-		  unitID = SOLDIER;
-		  break;
-	  case '2': // create a medic
-		  unitID = MEDIC;
-		  break;
-	  case '3': // create a mechanic
-		  unitID = MECHANIC;
-		  break;
-	  case '4': // create a saboteur
-		  unitID = SABOTEUR;
-		  break;
-	  default:
-		  MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
-		  break;
-	  }
+			createUnit(dynamic_cast<ConstructionYard*>(selectedunit),
+				{ currentcell.x, currentcell.y },
+				UNIT_ASSETS[unitID],
+				selectedunit->GetColour(),
+				(char) nChar
+			);
+		}
+		else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
+		{
+			switch (nChar) {
+			case '1': // create a soldier
+				unitID = SOLDIER;
+				break;
+			case '2': // create a medic
+				unitID = MEDIC;
+				break;
+			case '3': // create a mechanic
+				unitID = MECHANIC;
+				break;
+			case '4': // create a saboteur
+				unitID = SABOTEUR;
+				break;
+			default:
+				MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
+				break;
+			}
 	  
-	  createUnit(dynamic_cast<Armoury*>(selectedunit),
-		  { currentcell.x, currentcell.y },
-		  UNIT_ASSETS[unitID],
-		  selectedunit->GetColour(),
-		  (char) nChar
-	  );
+			createUnit(dynamic_cast<Armoury*>(selectedunit),
+				{ currentcell.x, currentcell.y },
+				UNIT_ASSETS[unitID],
+				selectedunit->GetColour(),
+				(char) nChar
+			);
+		}
+	onDraw();
 	}
-    onDraw();
-  }
 }
 
 void BattleField::createUnit(UnitBuilder * u, const Position & p, const wchar_t * f, int c, char id) {
@@ -312,7 +316,7 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
     if (canPlaceUnit(toplaceunit) && canPlaceStructure(toplaceunit))
     {
       assert(noofunits < units.max_size());
-      units.push_back(toplaceunit);
+      //units.push_back(toplaceunit);
       addToPlayArea(toplaceunit);
       toplaceunit=NULL;
     }

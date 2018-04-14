@@ -11,7 +11,7 @@ Armoury::~Armoury() {}
 
 const Size & Armoury::GetSize() const { return size; }
 const wchar_t * Armoury::GetFilename() const { return filename; }
-const int & Armoury::GetColour() const { return colour; }
+const int & Armoury::GetColour() const { return IUnit::GetColour(); }
 
 IUnit * Armoury::GetUnit(const wchar_t * f, const Position & p, const int c, char id) {
 	switch (id)

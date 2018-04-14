@@ -9,7 +9,7 @@ ConstructionYard::~ConstructionYard() {}
 
 const Size & ConstructionYard::GetSize() const { return size; }
 const wchar_t * ConstructionYard::GetFilename() const { return filename; }
-const int & ConstructionYard::GetColour() const { return colour; }
+const int & ConstructionYard::GetColour() const { return IUnit::GetColour(); }
 
 IUnit * ConstructionYard::GetUnit(const wchar_t *f, const Position &p, const int c, char id) {
 	switch (id)

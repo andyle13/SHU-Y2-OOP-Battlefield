@@ -4,7 +4,7 @@
 class ConstructionYard : public UnitBuilder
 {
 public:
-	ConstructionYard(const wchar_t *f, const Position &p, int c);
+	ConstructionYard(const wchar_t *f, const Position &p, const int c);
 	~ConstructionYard();
 
 	const Size & GetSize() const;
@@ -14,5 +14,6 @@ public:
 
 private:
 	const wchar_t* filename;
+	//const int color;
 };
 

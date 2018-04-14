@@ -39,10 +39,12 @@ private:
 
   static const wchar_t* UNIT_ASSETS[NO_OF_UNITS]; // stores the filenames of the bitmaps used for the different units
 
+  // Players
+  //Player p1;
+  //Player p2;
 
   // hold our battle units
   int noofunits;
-
   std::list<IUnit*> units;
 
   // the currently selected unit, or NULL if none is selected
