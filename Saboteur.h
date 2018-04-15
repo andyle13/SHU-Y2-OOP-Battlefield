@@ -21,5 +21,5 @@ private:
 	int strength, range;
 	const int maxhealth = 100;
 	const std::string name = "Saboteur";
-	const std::string option = "Move saboteur or right-click to deselect";
+	const std::string option = "1) Move";
 };

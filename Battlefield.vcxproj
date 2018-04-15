@@ -151,6 +151,9 @@
     <ClCompile Include="Attacker.cpp" />
     <ClCompile Include="BattleField.cpp" />
     <ClCompile Include="ConstructionYard.cpp" />
+    <ClCompile Include="Defence.cpp" />
+    <ClCompile Include="DefenceTurrent.cpp" />
+    <ClCompile Include="DefenceWall.cpp" />
     <ClCompile Include="EasyGraphics.cpp" />
     <ClCompile Include="Healer.cpp" />
     <ClCompile Include="IUnit.cpp" />
@@ -169,6 +172,9 @@
     <ClInclude Include="Attacker.h" />
     <ClInclude Include="BattleField.h" />
     <ClInclude Include="ConstructionYard.h" />
+    <ClInclude Include="Defence.h" />
+    <ClInclude Include="DefenceTurrent.h" />
+    <ClInclude Include="DefenceWall.h" />
     <ClInclude Include="EasyGraphics.h" />
     <ClInclude Include="Healer.h" />
     <ClInclude Include="IUnit.h" />

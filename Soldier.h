@@ -21,5 +21,5 @@ private:
 	int strength, range;
 	const int maxhealth = 150;
 	const std::string name = "Soldier";
-	const std::string option = "Move soldier or right-click to deselect";
+	const std::string option = "1) Move";
 };

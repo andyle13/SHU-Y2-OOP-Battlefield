@@ -21,7 +21,7 @@ protected:
   virtual void onChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 private:
-  static const int CELL_SIZE=20;  // size of a cell will be 20 pixels
+  static const int CELL_SIZE=30;  // size of a cell will be 20 pixels
   static const int CELLS_ACROSS=35; // number of cells in the x-direction
   static const int CELLS_DOWN=20; // number of cells in the y-direction
   static const int PLAYER_ONE_COLOUR=clDarkRed;
@@ -43,9 +43,15 @@ private:
   //Player p1;
   //Player p2;
 
+  // player turns
+  int turn;
+
   // hold our battle units
   int noofunits;
   std::list<IUnit*> units;
+
+  // marks an infantry to be moved
+  bool isMoved;
 
   // the currently selected unit, or NULL if none is selected
   IUnit* selectedunit;
@@ -55,6 +61,9 @@ private:
 
   // used to hold the currently hovered-over cell (updated in mousemove)
   POINT currentcell;
+
+  // used to save initial coordinate of moving unit
+  POINT premovepos;
   
   // playarea is used to store the board state - makes life easy when figuring out whether a space is free - not used for drawing though
   IUnit* playarea[CELLS_ACROSS][CELLS_DOWN];  
@@ -66,7 +75,9 @@ private:
   void addToPlayArea(IUnit* unit);  // places the unit onto the playarea
   bool canPlaceUnit(const IUnit* unit);  // checks to make sure the playarea is clear to place the unit
   bool canPlaceStructure(const IUnit* structure);  // checks to make sure a structure is within range of another
-  void createUnit(UnitBuilder * u, const Position & p, const wchar_t * f, const int c, char id);
+  bool endTurn(char choice);
+
+  const float getSpaces(const IUnit * s);
 };
 
 inline void BattleField::addToPlayArea(IUnit* unit)
