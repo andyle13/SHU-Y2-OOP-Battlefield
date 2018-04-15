@@ -87,14 +87,14 @@ void BattleField::onDraw()
 		int dy=selectedunit->GetPosition().y-currentcell.y;
     
 		bool valid=true;
-		if (dx==0 && dy==0)
-			valid=false;
+		if (dx == 0 && dy == 0)
+			valid = false;
 		else{
-			//
+			valid = true;
 		}
     
 		if (!valid)
-			drawWhiteCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
+			drawRedCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
 	}
 
 	// draw the toplaceunit if there is one and the location is valid
@@ -102,20 +102,22 @@ void BattleField::onDraw()
 	{
 		toplaceunit->SetPosition(currentcell.x, currentcell.y);
 		drawUnit(toplaceunit);
-
+		canPlaceStructure(toplaceunit);
+		
 		// check to see if the unit can be placed here (i.e the play area is free)
-		if (!canPlaceUnit(toplaceunit))
-			drawWhiteCross(toplaceunit->GetPosition().x,
+		if (!canPlaceUnit(toplaceunit)) {
+			drawRedCross(toplaceunit->GetPosition().x,
 				toplaceunit->GetPosition().y,
 				toplaceunit->GetSize().width,
 				toplaceunit->GetSize().height
 			);
+		}
 		else // check if location rules are valid
 		{
 			if (!canPlaceStructure(toplaceunit))
 			{
 				// draw a white cross through the unit to indicate it cannot be placed here
-				drawWhiteCross(toplaceunit->GetPosition().x,
+				drawRedCross(toplaceunit->GetPosition().x,
 					toplaceunit->GetPosition().y,
 					toplaceunit->GetSize().width,
 					toplaceunit->GetSize().height
@@ -142,10 +144,10 @@ bool BattleField::canPlaceUnit(const IUnit* unit)
 // This method should be optimised with your OO-base class structure
 bool BattleField::canPlaceStructure(const IUnit* structure)
 {
-	// use centre locations and calculate the tolerance allowed based on width and 5 spaces
+	// use centre locations and calculate the tolerance allowed based on width and allowed spaces
 	const float tx = structure->GetPosition().x + (structure->GetSize().width / 2.0f);
 	const float ty = structure->GetPosition().y + (structure->GetSize().height / 2.0f);
-	const float tolerance = (getSpaces(structure) + structure->GetSize().width) * (getSpaces(structure) + structure->GetSize().width);
+	const float tolerance = pow((getSpaces(structure) + structure->GetSize().width), 2);
 	
 	if (!isMoved) {
 		std::list<IUnit*>::iterator it;
@@ -153,25 +155,25 @@ bool BattleField::canPlaceStructure(const IUnit* structure)
 		{
 			if ((*it)->GetColour() == structure->GetColour())
 			{
-				const float cx = (*it)->GetPosition().x + ((*it)->GetSize().width / 2.0f);
-				const float cy = (*it)->GetPosition().y + ((*it)->GetSize().height / 2.0f);
-				const float dx = tx - cx;
-				const float dy = ty - cy;
-				const float distsqr = (dx*dx) + (dy*dy);
+				const float distsqr = getDistanceSqr({ (*it)->GetPosition().x, (*it)->GetPosition().y }, (*it)->GetSize(), tx, ty);
+				
+				if ((*it) == dynamic_cast<UnitBuilder*>(*it))
+					displayValidMoveGrid({ (*it)->GetPosition().x, (*it)->GetPosition().y }, CELL_SIZE * 2);
+				else
+					displayValidMoveGrid({ (*it)->GetPosition().x, (*it)->GetPosition().y }, CELL_SIZE);
+
 				if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
 					return true;
-			} // measures the distances between the structure and other owned unit 
+			}
 		} // iterates through the list to determine deployable position near owned units
-	}
+	} // measures the distances between the structure and other owned unit 
 	else {
-		const float cx = premovepos.x + (1.0f / 2.0f);
-		const float cy = premovepos.y + (1.0f / 2.0f);
-		const float dx = tx - cx;
-		const float dy = ty - cy;
-		const float distsqr = (dx*dx) + (dy*dy);
-		if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
+		const float distsqr = getDistanceSqr({ premovepos.x, premovepos.y }, { 1, 1 }, tx, ty);
+		displayValidMoveGrid({ premovepos.x, premovepos.y }, CELL_SIZE);
+		if (distsqr < tolerance) {
 			return true;
-	}
+		}
+	} // measure the distance between the moving structure and its previous coordinate
 	
 	return false;
 }
@@ -207,7 +209,8 @@ void BattleField::drawStatus()
 	else
 	{
 		std::string name = (turn % 2 == 0) ? "2" : "1";
-		(*this) << "Player " << name << " to create a move... click a unit to do something with it";
+		(*this) << "Player " << name << " to create a move... click a unit to do something with it\n";
+		(*this) << "\n0.) Finish turn.\n";
 	}
 
 }
@@ -241,6 +244,7 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				selectedunit->GetColour(),
 				(char) nChar
 			);
+			premovepos = { currentcell.x, currentcell.y };
 		}
 		else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
 		{
@@ -268,6 +272,8 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				selectedunit->GetColour(),
 				(char) nChar
 			);
+			premovepos = { currentcell.x, currentcell.y };
+
 		}
 		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
 			if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
@@ -290,6 +296,19 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 	onDraw();
 	}
+	if (nChar == '0') {
+		(*this) << "Do you want to end your turn?\n1.) Yes\n2.)\n";
+		if (endTurn((char)nChar)) {
+			/*std::list<IUnit*>::iterator it;
+			for (it = units.begin(); it != units.end(); it++)
+			{
+				if (dynamic_cast<Attacker*>(toplaceunit)->CanAttack(*it)) {
+					dynamic_cast<Attacker*>(toplaceunit)->Attack(*it);
+				}
+			}*/
+		}
+		
+	}
 }
 
 bool BattleField::endTurn(char choice) {
@@ -305,6 +324,22 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 				assert(noofunits < units.max_size());
 				units.push_back(toplaceunit);
 			} // prevent the moving unit from being pushed to the list
+			else {
+				dynamic_cast<Infantry*>(toplaceunit)->DepleteMoves(
+					sqrt(pow((toplaceunit->GetPosition().x - premovepos.x), 2)
+						+ pow((toplaceunit->GetPosition().y - premovepos.y), 2)
+					)
+				);
+				if (toplaceunit == dynamic_cast<Attacker*>(toplaceunit)) {
+					std::list<IUnit*>::iterator it;
+					for (it = units.begin(); it != units.end(); it++)
+					{
+						if (dynamic_cast<Attacker*>(toplaceunit)->CanAttack(*it)) {
+							dynamic_cast<Attacker*>(toplaceunit)->Attack(*it);
+						}
+					}
+				} // inflict damage to opponent units once they are in the attacker's range
+			} // deplete the unit's number of moves using the distance formular
 			addToPlayArea(toplaceunit);
 			toplaceunit = NULL;
 			isMoved = false;
@@ -372,4 +407,25 @@ const float BattleField::getSpaces(const IUnit* s) {
 	else
 		// place armoury at max. five spaces away from construction yard
 		return 5.0f;
+}
+
+void BattleField::displayValidMoveGrid(Position p, int cSize)
+{
+	setPenColour(clGreen, 4);
+	selectBackColour(clGreen);
+
+	drawRectangle(p.x * CELL_SIZE,
+		p.y * CELL_SIZE,
+		cSize,
+		cSize,
+		false
+	);
+}
+
+const float BattleField::getDistanceSqr(Position p, Size s, int tx, int ty) {
+	const float cx = p.x + (s.width / 2.0f);
+	const float cy = p.y + (s.height / 2.0f);
+	const float dx = tx - cx;
+	const float dy = ty - cy;
+	return pow(dx, 2) + pow(dy, 2);
 }

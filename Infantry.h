@@ -7,11 +7,14 @@ public:
 	~Infantry();
 
 	virtual void RestoreMovements() = 0;
-	bool IsValidMove(Position p);
+	const std::string GetOption() const;
 	int GetMoves();
+	void GetLegalMoves(Position p);
+	void DepleteMoves(int m);
 
 protected:
-	int moves;
 	Size size;
+	int moves;
+	const std::string option = "1) Move";
 };
 

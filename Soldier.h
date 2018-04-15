@@ -12,14 +12,14 @@ public:
 	const Size & GetSize() const;
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
+	const int GetStrength() const;
 
 	void RestoreMovements();
 	void Attack(IUnit * enemy);
 
 private:
 	const wchar_t* filename;
-	int strength, range;
 	const int maxhealth = 150;
 	const std::string name = "Soldier";
-	const std::string option = "1) Move";
+	const std::string option = "Attack: Move this unit at least two spaces away from an opponent.";
 };

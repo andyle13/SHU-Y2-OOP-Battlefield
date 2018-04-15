@@ -17,6 +17,6 @@ void IUnit::SetHealth(int changeHealth) {
 	health = changeHealth;
 }
 
-void IUnit::UpdateHealth(int changeHealth) {
-	health += changeHealth;
+void IUnit::DecreaseHealth(int damage) {
+	health -= damage;
 }

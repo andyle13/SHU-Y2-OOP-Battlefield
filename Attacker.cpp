@@ -4,3 +4,21 @@ Attacker::Attacker(const Position &p, const int c, int h, int s, int m, int r)
 	: Infantry(p, c, h, m), strength(s), range(r) {}
 
 Attacker::~Attacker() {}
+
+bool Attacker::CanAttack(IUnit * enemy) {
+	if (colour != enemy->GetColour()) {
+		const float tx = position.x + (size.width / 2.0f);
+		const float ty = position.y + (size.height / 2.0f);
+		const float tolerance = pow((range + size.width), 2);
+
+		const float cx = enemy->GetPosition().x + (enemy->GetSize().width / 2.0f);
+		const float cy = enemy->GetPosition().y + (enemy->GetSize().height / 2.0f);
+		const float dx = tx - cx;
+		const float dy = ty - cy;
+		const float distsqr = pow(dx, 2) + pow(dy, 2);
+		if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
+			return true;
+		// measures the distances between the structure and opponent units
+	}
+	return false;
+}

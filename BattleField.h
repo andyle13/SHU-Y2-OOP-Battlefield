@@ -70,7 +70,7 @@ private:
 
   void drawUnit(const IUnit* unit);  // draws a unit
   void drawStatus();  // draw the status text at the bottom of the window
-  void drawWhiteCross(const int x, const int y, const int width, const int height);
+  void drawRedCross(const int x, const int y, const int width, const int height);
   void updatePlayArea();  // updates the playarea array using the units array (does a complete update)
   void addToPlayArea(IUnit* unit);  // places the unit onto the playarea
   bool canPlaceUnit(const IUnit* unit);  // checks to make sure the playarea is clear to place the unit
@@ -78,6 +78,8 @@ private:
   bool endTurn(char choice);
 
   const float getSpaces(const IUnit * s);
+  const float getDistanceSqr(Position p, Size s, int tx, int ty);
+  void displayValidMoveGrid(Position p, int cSize);
 };
 
 inline void BattleField::addToPlayArea(IUnit* unit)
@@ -87,9 +89,9 @@ inline void BattleField::addToPlayArea(IUnit* unit)
       playarea[unit->GetPosition().x + i][unit->GetPosition().y + j] = unit;
 }
 
-inline void BattleField::drawWhiteCross(const int x, const int y, const int width, const int height)
+inline void BattleField::drawRedCross(const int x, const int y, const int width, const int height)
 {
-  setPenColour(clWhite, 2);
+  setPenColour(clRed, 2);
   const int left=x*CELL_SIZE;
   const int right=(x+width)*CELL_SIZE;
   const int top=y*CELL_SIZE;

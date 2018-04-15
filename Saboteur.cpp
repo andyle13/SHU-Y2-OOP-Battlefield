@@ -14,12 +14,16 @@ const wchar_t * Saboteur::GetFilename() const { return filename; }
 const int & Saboteur::GetColour() const { return colour; }
 void Saboteur::RestoreMovements() { moves = 2; }
 
+const int Saboteur::GetStrength() const {
+	return strength;
+}
+
 void Saboteur::Attack(IUnit * enemy)
 {
 	if (enemy == dynamic_cast<Structure*>(enemy))
 	{
-		enemy->UpdateHealth(-(strength * 20));
+		enemy->DecreaseHealth(strength * 20);
 	}
 	else
-		enemy->UpdateHealth(-strength);
+		enemy->DecreaseHealth(strength);
 }
