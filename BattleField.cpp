@@ -1,5 +1,5 @@
 #include "BattleField.h"
-#include "Player.h"
+//#include "Player.h"
 #include "ConstructionYard.h"
 #include "Armoury.h"
 #include "Attacker.h"
@@ -23,14 +23,16 @@ const wchar_t* BattleField::UNIT_ASSETS[NO_OF_UNITS]=
 
 BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(NULL), isMoved(false)
 {
-	currentcell={-1, -1}; // out of bounds
+	currentcell = {-1, -1}; // out of bounds
 
 	// create two initial construction yard structures - I am using colour to determine which unit belongs to which player... a little bit of a fudge
 	turn = 1;
 	noofunits = 2;
 	int thisx, thisy;
-	Player *p1 = new Player("Player 1", PLAYER_ONE_COLOUR);
-	Player *p2 = new Player("Player 2", PLAYER_TWO_COLOUR);
+	
+	p1 = new Player("Player 1", PLAYER_ONE_COLOUR);
+	p2 = new Player("Player 2", PLAYER_TWO_COLOUR);
+	player = p1;
 
 	units.push_back(
 		new ConstructionYard(
@@ -60,9 +62,8 @@ BattleField::~BattleField()
 
 	// This keeps crashing the program when it closes
 	/*
-	std::list<IUnit*>::iterator unitIT2;
-	for (unitIT2 = tempunits.begin(); unitIT2 != tempunits.end(); unitIT2++)
-		delete (*unitIT2);*/
+	for (unitIT = tempunits.begin(); unitIT != tempunits.end(); unitIT++)
+		delete (*unitIT);*/
 }
 
 void BattleField::onCreate()
@@ -319,79 +320,88 @@ void BattleField::drawStatus()
 
 void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+
 	if (selectedunit)
 	{
-		int unitID;
-		if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
-		{
-			switch (nChar)
-			{
-			case '1': // create an armoury
-				unitID = ARMOURY;
-				break;
-			case '2': // create a defence wall
-				unitID = DEFENCE_WALL;
-				break;
-			case '3': // create a defence turret
-				unitID = DEFENCE_TURRET;
-				break;
-			default:
-				MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
-				break;
-			}
 
-			toplaceunit = dynamic_cast<ConstructionYard*>(selectedunit)->GetUnit(
-				UNIT_ASSETS[unitID],
-				{ currentcell.x, currentcell.y },
-				selectedunit->GetColour(),
-				(char) nChar
-			);
-		}
-		else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
+		if (isPlayerTurn((selectedunit->GetColour())))
 		{
-			switch (nChar) {
-			case '1': // create a soldier
-				unitID = SOLDIER;
-				break;
-			case '2': // create a medic
-				unitID = MEDIC;
-				break;
-			case '3': // create a mechanic
-				unitID = MECHANIC;
-				break;
-			case '4': // create a saboteur
-				unitID = SABOTEUR;
-				break;
-			default:
-				MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
-				break;
-			}
-	  
-			toplaceunit = dynamic_cast<Armoury*>(selectedunit)->GetUnit(
-				UNIT_ASSETS[unitID],
-				{ currentcell.x, currentcell.y },
-				selectedunit->GetColour(),
-				(char) nChar
-			);
-		}
-		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
-			if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
-				switch (nChar) {
-				case '1': {
-					// deallocate the unit from its position to move
-					isMoved = true;
-					toplaceunit = selectedunit;
-					playarea[currentcell.x][currentcell.y] = NULL;
-					premovepos = { currentcell.x, currentcell.y };
+			int unitID;
+			if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
+			{
+				switch (nChar)
+				{
+				case '1': // create an armoury
+					unitID = ARMOURY;
 					break;
-				}
-				case '2':
-					// attack or heal
+				case '2': // create a defence wall
+					unitID = DEFENCE_WALL;
+					break;
+				case '3': // create a defence turret
+					unitID = DEFENCE_TURRET;
 					break;
 				default:
+					MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
 					break;
 				}
+
+				toplaceunit = dynamic_cast<ConstructionYard*>(selectedunit)->GetUnit(
+					UNIT_ASSETS[unitID],
+					{ currentcell.x, currentcell.y },
+					selectedunit->GetColour(),
+					(char)nChar
+				);
 			}
+			else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
+			{
+				switch (nChar) {
+				case '1': // create a soldier
+					unitID = SOLDIER;
+					break;
+				case '2': // create a medic
+					unitID = MEDIC;
+					break;
+				case '3': // create a mechanic
+					unitID = MECHANIC;
+					break;
+				case '4': // create a saboteur
+					unitID = SABOTEUR;
+					break;
+				default:
+					MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
+					break;
+				}
+
+				toplaceunit = dynamic_cast<Armoury*>(selectedunit)->GetUnit(
+					UNIT_ASSETS[unitID],
+					{ currentcell.x, currentcell.y },
+					selectedunit->GetColour(),
+					(char)nChar
+				);
+			}
+			else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
+				if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
+					switch (nChar) {
+					case '1': {
+						// deallocate the unit from its position to move
+						isMoved = true;
+						toplaceunit = selectedunit;
+						playarea[currentcell.x][currentcell.y] = NULL;
+						premovepos = { currentcell.x, currentcell.y };
+						break;
+					}
+					case '2':
+						// attack or heal
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			// DISPLAY ERROR MESSAGE!!
 		}
 	onDraw();
 	}
@@ -478,6 +488,14 @@ const float BattleField::getSpaces(const IUnit* s) {
 		// place armoury at max. five spaces away from construction yard
 		return 5.0f;
 }
+
+const bool BattleField::isPlayerTurn(const IUnit* u)
+{
+	if ((*player).GetColour() == (*u).GetColour())
+		return true;
+	return false;
+}
+
 
 const bool BattleField::checkIfGameOver()
 {

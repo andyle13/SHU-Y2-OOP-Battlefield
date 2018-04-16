@@ -2,6 +2,7 @@
 #include "EasyGraphics.h"
 #include "IUnit.h"
 #include "UnitBuilder.h"
+#include "Player.h"
 #include <list>
 
 // this IUnit structure is designed to give you some skeleton code to work with, however it is expected that you
@@ -40,8 +41,13 @@ private:
 	static const wchar_t* UNIT_ASSETS[NO_OF_UNITS]; // stores the filenames of the bitmaps used for the different units
 	int unitID;
 	// Players
-	//Player p1;
-	//Player p2;
+	//Player *p1;
+	//Player *p2;
+	
+
+	Player *p1;
+	Player *p2;
+	Player *player;
 
 	// player turns
 	int turn;
@@ -81,7 +87,8 @@ private:
 
 	const bool existInList(const IUnit* unit);
 	const float getSpaces(const IUnit * s);
-	const bool BattleField::checkIfGameOver();
+	const bool checkIfGameOver();
+	const bool isPlayerTurn(const IUnit* u);
 };
 
 inline void BattleField::addToPlayArea(IUnit* unit)
