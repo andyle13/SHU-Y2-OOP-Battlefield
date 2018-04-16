@@ -17,17 +17,11 @@ void IUnit::SetHealth(int changeHealth) {
 	health = changeHealth;
 }
 
-<<<<<<< HEAD
 void IUnit::DecreaseHealth(int damage) {
 	health -= damage;
-}
-=======
-void IUnit::UpdateHealth(int changeHealth) {
-	health += changeHealth;
 }
 
 const int IUnit::GetCost() const
 {
 	return cost;
 }
->>>>>>> daniel

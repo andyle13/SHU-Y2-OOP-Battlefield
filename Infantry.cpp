@@ -5,13 +5,10 @@ Infantry::Infantry(const Position &p, const int c, int h, int m, int cos)
 
 Infantry::~Infantry() {}
 
-<<<<<<< HEAD
 const std::string Infantry::GetOption() const{
 	return (option + " (Moves available: " + std::to_string(moves) + ")\n");
 }
 
-=======
->>>>>>> daniel
 int Infantry::GetMoves() 
 {
 	return moves;

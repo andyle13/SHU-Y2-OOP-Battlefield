@@ -7,11 +7,8 @@ public:
 	~Infantry();
 
 	virtual void RestoreMovements() = 0;
-<<<<<<< HEAD
 	const std::string GetOption() const;
-=======
 	//bool IsValidMove(Position p);
->>>>>>> daniel
 	int GetMoves();
 	void GetLegalMoves(Position p);
 	void DepleteMoves(int m);

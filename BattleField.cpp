@@ -113,33 +113,14 @@ void BattleField::onDraw()
 	{
 		toplaceunit->SetPosition(currentcell.x, currentcell.y);
 		drawUnit(toplaceunit);
-<<<<<<< HEAD
 		canPlaceStructure(toplaceunit);
 		
-		// check to see if the unit can be placed here (i.e the play area is free)
-		if (!canPlaceUnit(toplaceunit)) {
-			drawRedCross(toplaceunit->GetPosition().x,
-				toplaceunit->GetPosition().y,
-				toplaceunit->GetSize().width,
-				toplaceunit->GetSize().height
-			);
-		}
-		else // check if location rules are valid
-		{
-			if (!canPlaceStructure(toplaceunit))
-			{
-				// draw a white cross through the unit to indicate it cannot be placed here
-				drawRedCross(toplaceunit->GetPosition().x,
-=======
-
-
 		// check if the unit is not a healer type - healer units can be placed on occupied areas
-		if (!(selectedunit == dynamic_cast<Healer*>(selectedunit)))
-		{
+		//if (!(selectedunit == dynamic_cast<Healer*>(selectedunit)))
+		//{
 			// check to see if the unit can be placed here (i.e the play area is free)
 			if (!canPlaceUnit(toplaceunit))
-				drawWhiteCross(toplaceunit->GetPosition().x,
->>>>>>> daniel
+				drawRedCross(toplaceunit->GetPosition().x,
 					toplaceunit->GetPosition().y,
 					toplaceunit->GetSize().width,
 					toplaceunit->GetSize().height
@@ -149,14 +130,14 @@ void BattleField::onDraw()
 				if (!canPlaceStructure(toplaceunit))
 				{
 					// draw a white cross through the unit to indicate it cannot be placed here
-					drawWhiteCross(toplaceunit->GetPosition().x,
+					drawRedCross(toplaceunit->GetPosition().x,
 						toplaceunit->GetPosition().y,
 						toplaceunit->GetSize().width,
 						toplaceunit->GetSize().height
 					);
 				}
 			}
-		}
+		/*}
 		else
 		{
 			std::list<IUnit*>::iterator loop;
@@ -193,7 +174,7 @@ void BattleField::onDraw()
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	drawStatus();
@@ -216,9 +197,9 @@ bool BattleField::canPlaceUnit(const IUnit* unit)
 	for (int i = 0; i < unit->GetSize().width; i++)
 		for (int j = 0; j < unit->GetSize().height; j++)
 			if (playarea[unit->GetPosition().x + i][unit->GetPosition().y + j]) { // use the pointer as true or false
-				if (selectedunit != dynamic_cast<Healer*>(selectedunit))
+				//if (selectedunit != dynamic_cast<Healer*>(selectedunit))
 					return false;
-				else
+				/*else
 				{
 					if (selectedunit == dynamic_cast<Medic*>(selectedunit))
 					{
@@ -260,9 +241,9 @@ bool BattleField::canPlaceUnit(const IUnit* unit)
 					{
 						return false;
 					}
-				}
+				}*/
 			}
-	updatePlayArea();
+	//updatePlayArea();
 	return true;
 }
 
@@ -342,12 +323,12 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (selectedunit)
 	{
 
-		if (isPlayerTurn((selectedunit->GetColour())))
+		//if (isPlayerTurn((selectedunit->GetColour())))
+		//{
+		int unitID;
+		if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
 		{
-			int unitID;
-			if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD]) // note that his is checking the memory references to the literal string filename and not the contents
-			{
-<<<<<<< HEAD
+			switch (nChar) {
 			case '1': // create an armoury
 				unitID = ARMOURY;
 				break;
@@ -363,76 +344,19 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 
 			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 4))
-=======
-				switch (nChar)
-				{
-				case '1': // create an armoury
-					unitID = ARMOURY;
-					break;
-				case '2': // create a defence wall
-					unitID = DEFENCE_WALL;
-					break;
-				case '3': // create a defence turret
-					unitID = DEFENCE_TURRET;
-					break;
-				default:
-					MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
-					break;
-				}
-
->>>>>>> daniel
 				toplaceunit = dynamic_cast<ConstructionYard*>(selectedunit)->GetUnit(
 					UNIT_ASSETS[unitID],
 					{ currentcell.x, currentcell.y },
 					selectedunit->GetColour(),
-<<<<<<< HEAD
-					(char) nChar
+					(char)nChar
 				);
 		}
 		else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
 		{
 			switch (nChar) {
-			case '1': // create a soldier
-				unitID = SOLDIER;
-				break;
-			case '2': // create a medic
-				unitID = MEDIC;
-				break;
-			case '3': // create a mechanic
-				unitID = MECHANIC;
-				break;
-			case '4': // create a saboteur
-				unitID = SABOTEUR;
-				break;
-			default:
-				MessageBox(getHWND(), L"Select a valid infantry.", L"BattleField", MB_ICONERROR);
-				break;
-			}
-	  
-			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 5))
-				toplaceunit = dynamic_cast<Armoury*>(selectedunit)->GetUnit(
-					UNIT_ASSETS[unitID],
-					{ currentcell.x, currentcell.y },
-					selectedunit->GetColour(),
-					(char) nChar
-				);
-		}
-		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
-			if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
-=======
-					(char)nChar
-				);
-			}
-			else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
-			{
->>>>>>> daniel
-				switch (nChar) {
 				case '1': // create a soldier
 					unitID = SOLDIER;
 					break;
-<<<<<<< HEAD
-				}
-=======
 				case '2': // create a medic
 					unitID = MEDIC;
 					break;
@@ -442,43 +366,41 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				case '4': // create a saboteur
 					unitID = SABOTEUR;
 					break;
->>>>>>> daniel
 				default:
-					MessageBox(getHWND(), L"Creation not currently supported", L"BattleField", MB_ICONERROR);
+					MessageBox(getHWND(), L"Select a valid infantry.", L"BattleField", MB_ICONERROR);
 					break;
-				}
+			}
 
+			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 5))
 				toplaceunit = dynamic_cast<Armoury*>(selectedunit)->GetUnit(
 					UNIT_ASSETS[unitID],
 					{ currentcell.x, currentcell.y },
 					selectedunit->GetColour(),
 					(char)nChar
 				);
-			}
-			else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
-				if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
-					switch (nChar) {
-					case '1': {
-						// deallocate the unit from its position to move
-						isMoved = true;
-						toplaceunit = selectedunit;
-						playarea[currentcell.x][currentcell.y] = NULL;
-						premovepos = { currentcell.x, currentcell.y };
-						break;
-					}
-					case '2':
-						// attack or heal
-						break;
-					default:
-						break;
-					}
+		}
+		//}
+		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
+			if (selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
+				switch (nChar) {
+				case '1': {
+					// deallocate the unit from its position to move
+					isMoved = true;
+					toplaceunit = selectedunit;
+					playarea[currentcell.x][currentcell.y] = NULL;
+					premovepos = { currentcell.x, currentcell.y };
+					break;
+				}
+				default:
+					break;
 				}
 			}
 		}
-		else
-		{
+		
+		//else
+		//{
 			// DISPLAY ERROR MESSAGE!!
-		}
+		//}
 	onDraw();
 	}
 	if (nChar == '0') {
@@ -583,7 +505,6 @@ const float BattleField::getSpaces(const IUnit* s) {
 		return 5.0f;
 }
 
-<<<<<<< HEAD
 void BattleField::displayValidMoveGrid(Position p, int cSize)
 {
 	setPenColour(clGreen, 4);
@@ -676,7 +597,7 @@ void BattleField::signalAttack(IUnit * enemy) {
 	);
 	//Sleep(1000);
 }
-=======
+
 const bool BattleField::isPlayerTurn(const IUnit* u)
 {
 	if ((*player).GetColour() == (*u).GetColour())
@@ -709,8 +630,3 @@ const bool BattleField::checkIfGameOver()
 	}
 
 }
-
-
-
-
->>>>>>> daniel

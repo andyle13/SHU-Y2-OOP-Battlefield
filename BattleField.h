@@ -73,7 +73,6 @@ private:
 	// used to save initial coordinate of moving unit
 	POINT premovepos;
   
-<<<<<<< HEAD
   // playarea is used to store the board state - makes life easy when figuring out whether a space is free - not used for drawing though
   IUnit* playarea[CELLS_ACROSS][CELLS_DOWN];  
 
@@ -93,24 +92,10 @@ private:
   void eliminateEnemy(IUnit * killedunit);
   void signalAttack(IUnit * enemy);
   void displayValidMoveGrid(Position p, int cSize);
-=======
-	// playarea is used to store the board state - makes life easy when figuring out whether a space is free - not used for drawing though
-	IUnit* playarea[CELLS_ACROSS][CELLS_DOWN];  
-
-	void drawUnit(const IUnit* unit);  // draws a unit
-	void drawStatus();  // draw the status text at the bottom of the window
-	void drawWhiteCross(const int x, const int y, const int width, const int height);
-	void updatePlayArea();  // updates the playarea array using the units array (does a complete update)
-	void addToPlayArea(IUnit* unit);  // places the unit onto the playarea
-	bool canPlaceUnit(const IUnit* unit);  // checks to make sure the playarea is clear to place the unit
-	bool canPlaceStructure(const IUnit* structure);  // checks to make sure a structure is within range of another
-	bool endTurn(char choice);
 
 	const bool existInList(const IUnit* unit);
-	const float getSpaces(const IUnit * s);
 	const bool checkIfGameOver();
 	const bool isPlayerTurn(const IUnit* u);
->>>>>>> daniel
 };
 
 inline void BattleField::addToPlayArea(IUnit* unit)
@@ -122,7 +107,6 @@ inline void BattleField::addToPlayArea(IUnit* unit)
 
 inline void BattleField::drawRedCross(const int x, const int y, const int width, const int height)
 {
-<<<<<<< HEAD
   setPenColour(clRed, 2);
   const int left=x*CELL_SIZE;
   const int right=(x+width)*CELL_SIZE;
@@ -139,13 +123,6 @@ inline void BattleField::drawBlackCross(const int x, const int y, const int widt
 	const int right = (x + width)*CELL_SIZE;
 	const int top = y * CELL_SIZE;
 	const int bottom = (y + height)*CELL_SIZE;
-=======
-	setPenColour(clWhite, 2);
-	const int left=x*CELL_SIZE;
-	const int right=(x+width)*CELL_SIZE;
-	const int top=y*CELL_SIZE;
-	const int bottom=(y+height)*CELL_SIZE;
->>>>>>> daniel
 	drawLine(left, top, right, bottom);
 	drawLine(right, top, left, bottom);
 }
