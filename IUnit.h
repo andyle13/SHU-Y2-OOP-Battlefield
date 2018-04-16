@@ -12,7 +12,7 @@ struct Size {
 class IUnit
 {
 public:
-	IUnit(const Position & p, const int c, int h);
+	IUnit(const Position & p, const int c, int h, int cos);
 	virtual ~IUnit() = 0;
 
 	virtual const Size & GetSize() const = 0;
@@ -21,6 +21,7 @@ public:
 	virtual const std::string GetName() const = 0;
 	virtual const std::string GetOption() const = 0;
 
+	const int GetCost() const;
 	virtual const Position & GetPosition() const;
 	virtual const int & GetHealth() const;
 	virtual const int & GetColour() const;
@@ -31,5 +32,5 @@ public:
 protected:
 	Position position;
 	int health;
-	const int colour;
+	const int colour, cost;
 };

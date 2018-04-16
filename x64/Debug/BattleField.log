@@ -1,9 +1,20 @@
 ﻿  DefenceWall.cpp
   DefenceTurrent.cpp
   Defence.cpp
-  BattleField.cpp
-c:\users\andyl\desktop\battlefield\battlefield.cpp(29): warning C4101: 'thisy': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(29): warning C4101: 'thisx': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(368): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
   Generating Code...
-  BattleField.vcxproj -> C:\Users\andyl\Desktop\Battlefield\x64\Debug\BattleField.exe
+  Compiling...
+  ConstructionYard.cpp
+  Generating Code...
+  Compiling...
+  Armoury.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Soldier.cpp
+  Saboteur.cpp
+  Medic.cpp
+  Mechanic.cpp
+  Infantry.cpp
+  Healer.cpp
+  BattleField.cpp
+  Attacker.cpp
+  BattleField.vcxproj -> C:\Users\Clearance Bargains\Documents\GitHub\Battlefield\x64\Debug\BattleField.exe

@@ -3,11 +3,11 @@
 class Infantry : public IUnit
 {
 public:
-	Infantry(const Position &p, const int c, int h, int m);
+	Infantry(const Position &p, const int c, int h, int m, int cos);
 	~Infantry();
 
 	virtual void RestoreMovements() = 0;
-	bool IsValidMove(Position p);
+	//bool IsValidMove(Position p);
 	int GetMoves();
 
 protected:

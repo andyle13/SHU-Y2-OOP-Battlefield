@@ -2,7 +2,7 @@
 
 
 
-DefenceTurrent::DefenceTurrent(const Position &p, const int c) : Defence(p, c, 150)
+DefenceTurrent::DefenceTurrent(const wchar_t *f, const Position &p, const int c) : Defence(p, c, 200, 150), filename(f)
 {
 }
 
@@ -15,6 +15,17 @@ void DefenceTurrent::Attack(IUnit* u)
 {
 	u->SetHealth(-25);
 }
+
+const wchar_t * DefenceTurrent::GetFilename() const { return filename; }
+
+const int DefenceTurrent::GetMaxHealth() const { return maxhealth; }
+const std::string DefenceTurrent::GetName() const { return name; }
+const std::string DefenceTurrent::GetOption() const { return option; }
+const Size & DefenceTurrent::GetSize() const { return size; }
+const int & DefenceTurrent::GetColour() const { return colour; }
+
+
+
 /*
 const bool DefenceTurrent::CanAttack(IUnit* u) const
 {

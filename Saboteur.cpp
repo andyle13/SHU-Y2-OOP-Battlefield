@@ -2,7 +2,7 @@
 #include "Structure.h"
 
 Saboteur::Saboteur(const wchar_t *f, const Position &p, const int c)
-	: Attacker(p, c, 100, 5, 2, 2), filename(f) {}
+	: Attacker(p, c, 100, 5, 2, 2, 200), filename(f) {}
 
 Saboteur::~Saboteur() {}
 
