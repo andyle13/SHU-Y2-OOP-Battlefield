@@ -14,7 +14,7 @@ public:
 	const int & GetColour() const;
 	const int GetStrength() const;
 
-	void RestoreMovements();
+	void RestoreActions();
 	void Attack(IUnit * enemy);
 
 private:

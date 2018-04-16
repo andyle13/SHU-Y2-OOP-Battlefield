@@ -5,6 +5,7 @@ IUnit::IUnit(const Position & p, const int c, int h, int cos)
 
 IUnit::~IUnit() {}
 
+//const Size & IUnit::GetSize() const { return size; }
 const Position & IUnit::GetPosition() const { return position; }
 const int & IUnit::GetHealth() const { return health; }
 const int & IUnit::GetColour() const { return colour; }

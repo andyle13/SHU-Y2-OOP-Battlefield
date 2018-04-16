@@ -1,67 +1,20 @@
 #include "DefenceTurrent.h"
 
+DefenceTurrent::DefenceTurrent(const wchar_t *f, const Position &p, const int c)
+	: Defence(p, c, 200, 150), Attacker(p, c, 200, 25, 0, 6, 150), filename(f) {}
 
+DefenceTurrent::~DefenceTurrent() {}
 
-DefenceTurrent::DefenceTurrent(const wchar_t *f, const Position &p, const int c) : Defence(p, c, 200, 150), filename(f)
+void DefenceTurrent::Attack(IUnit * enemy)
 {
-}
-
-
-DefenceTurrent::~DefenceTurrent()
-{
-}
-
-void DefenceTurrent::Attack(IUnit* u)
-{
-	u->SetHealth(-25);
+	enemy->DecreaseHealth(strength);
 }
 
 const wchar_t * DefenceTurrent::GetFilename() const { return filename; }
-
 const int DefenceTurrent::GetMaxHealth() const { return maxhealth; }
 const std::string DefenceTurrent::GetName() const { return name; }
 const std::string DefenceTurrent::GetOption() const { return option; }
-const Size & DefenceTurrent::GetSize() const { return size; }
-const int & DefenceTurrent::GetColour() const { return colour; }
-
-
-
-/*
-const bool DefenceTurrent::CanAttack(IUnit* u) const
-{
-
-	if ((position.x > u->GetPosition().x) && (position.y > u->GetPosition().y))
-	{
-		if ((((position.x - u->GetPosition().x) >= 1) && ((position.x - u->GetPosition().x) <= 6)) && (((position.y - u->GetPosition().y) >= 1) && ((position.y - u->GetPosition().y) <= 6)))
-			return true;
-	}
-	else if ((position.x < u->GetPosition().x) && (position.y > u->GetPosition().y))
-	{
-		if ((((u->GetPosition().x - position.x) >= 1) && ((u->GetPosition().x - position.x) <= 6)) && (((position.y - u->GetPosition().y) >= 1) && ((position.y - u->GetPosition().y) <= 6)))
-			return true;
-	}
-	else if ((position.x > u->GetPosition().x) && (position.y < u->GetPosition().y))
-	{
-		if ((((position.x - u->GetPosition().x) >= 1) && ((position.x - u->GetPosition().x) <= 6)) && (((u->GetPosition().y - position.y) >= 1) && ((u->GetPosition().y - position.y) <= 6)))
-			return true;
-	}
-	else if ((position.x < u->GetPosition().x) && (position.y < u->GetPosition().y))
-	{
-		if ((((u->GetPosition().x - position.x) >= 1) && ((u->GetPosition().x - position.x) <= 6)) && (((u->GetPosition().y - position.y) >= 1) && ((u->GetPosition().y - position.y) <= 6)))
-			return true;
-	}
-	else
-	{
-		return false;
-	}
-
-	/*
-	if((position.x > u->GetPosition().x) && (position.y > u->GetPosition().y))
-
-		if ((position.x < u->GetPosition().x) && (position.y > u->GetPosition().y))
-
-			if ((position.x > u->GetPosition().x) && (position.y < u->GetPosition().y))
-
-				if ((position.x < u->GetPosition().x) && (position.y < u->GetPosition().y))
-
-}*/
+void DefenceTurrent::RestoreActions() { hasAttacked = false; }
+const Size & DefenceTurrent::GetSize() const { return { 1,1 }; }
+const int & DefenceTurrent::GetColour() const { return 0; }
+const int DefenceTurrent::GetStrength() const { return strength; }
