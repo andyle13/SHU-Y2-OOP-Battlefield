@@ -1,8 +1,13 @@
 ﻿  BattleField.cpp
-c:\users\andyl\desktop\battlefield\battlefield.cpp(29): warning C4101: 'thisy': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(29): warning C4101: 'thisx': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(158): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(171): warning C4244: 'argument': conversion from 'const float' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(329): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(403): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(30): warning C4101: 'thisy': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(30): warning C4101: 'thisx': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(317): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(386): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(404): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(405): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(409): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(410): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Main.cpp
   BattleField.vcxproj -> C:\Users\andyl\Desktop\Battlefield\x64\Debug\BattleField.exe

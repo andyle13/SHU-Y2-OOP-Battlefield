@@ -16,9 +16,8 @@ bool Attacker::CanAttack(IUnit * enemy) {
 		const float dx = tx - cx;
 		const float dy = ty - cy;
 		const float distsqr = pow(dx, 2) + pow(dy, 2);
-		if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
+		if (distsqr < tolerance)
 			return true;
-		// measures the distances between the structure and opponent units
-	}
+	} // measures the distances between the structure and opponent units
 	return false;
 }
