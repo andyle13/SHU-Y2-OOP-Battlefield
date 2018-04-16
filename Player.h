@@ -10,7 +10,7 @@ public:
 
 	//std::list<IUnit*> GetPlayerUnits();
 	//void AddUnit(IUnit * u);
-	int GetColour();
+	const int GetColour();
 
 private:
 	//std::list<IUnit*> units;

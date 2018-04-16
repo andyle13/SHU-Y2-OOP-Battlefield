@@ -1,7 +1,7 @@
 #include "IUnit.h"
 
-IUnit::IUnit(const Position & p, const int c, int h)
-	: position(p), colour(c), health(h) {}
+IUnit::IUnit(const Position & p, const int c, int h, int cos)
+	: position(p), colour(c), health(h), cost(cos) {}
 
 IUnit::~IUnit() {}
 
@@ -17,6 +17,17 @@ void IUnit::SetHealth(int changeHealth) {
 	health = changeHealth;
 }
 
+<<<<<<< HEAD
 void IUnit::DecreaseHealth(int damage) {
 	health -= damage;
 }
+=======
+void IUnit::UpdateHealth(int changeHealth) {
+	health += changeHealth;
+}
+
+const int IUnit::GetCost() const
+{
+	return cost;
+}
+>>>>>>> daniel

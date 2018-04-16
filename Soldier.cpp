@@ -1,7 +1,7 @@
 #include "Soldier.h"
 
 Soldier::Soldier(const wchar_t *f, const Position &p, const int c)
-	: Attacker(p, c, 150, 10, 2, 2), filename(f) {}
+	: Attacker(p, c, 150, 10, 2, 2, 100), filename(f) {}
 
 Soldier::~Soldier() {}
 

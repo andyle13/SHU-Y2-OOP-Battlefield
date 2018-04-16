@@ -1,14 +1,17 @@
 #include "Infantry.h"
 
-Infantry::Infantry(const Position &p, const int c, int h, int m)
-	: IUnit(p, c, h), moves(m), size({ 1,1 }) {}
+Infantry::Infantry(const Position &p, const int c, int h, int m, int cos)
+	: IUnit(p, c, h, cos), moves(m), size({ 1,1 }) {}
 
 Infantry::~Infantry() {}
 
+<<<<<<< HEAD
 const std::string Infantry::GetOption() const{
 	return (option + " (Moves available: " + std::to_string(moves) + ")\n");
 }
 
+=======
+>>>>>>> daniel
 int Infantry::GetMoves() 
 {
 	return moves;

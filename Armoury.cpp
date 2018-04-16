@@ -5,7 +5,7 @@
 #include "Saboteur.h"
 
 Armoury::Armoury(const wchar_t *f, const Position &p, const int c)
-	: UnitBuilder(p, c, 200), filename(f) {}
+	: UnitBuilder(p, c, 200, 250), filename(f) {}
 
 Armoury::~Armoury() {}
 

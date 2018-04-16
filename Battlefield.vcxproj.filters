@@ -75,9 +75,6 @@
     <ClCompile Include="Soldier.cpp">
       <Filter>Source Files\Units\Infantry\Attacker</Filter>
     </ClCompile>
-    <ClCompile Include="Mechanic.cpp">
-      <Filter>Source Files\Units\Infantry\Healer</Filter>
-    </ClCompile>
     <ClCompile Include="Medic.cpp">
       <Filter>Source Files\Units\Infantry\Healer</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="Structure.cpp">
       <Filter>Source Files\Units\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Mechanic.cpp">
+      <Filter>Source Files\Units\Infantry\Healer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

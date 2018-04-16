@@ -5,4 +5,4 @@ Player::Player(std::string p, const int c)
 
 Player::~Player() {}
 
-int Player::GetColour() { return colour; }
+const int Player::GetColour() { return colour; }

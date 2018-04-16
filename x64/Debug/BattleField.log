@@ -1,4 +1,5 @@
 ﻿  BattleField.cpp
+<<<<<<< HEAD
 c:\users\andyl\desktop\battlefield\battlefield.cpp(30): warning C4101: 'thisy': unreferenced local variable
 c:\users\andyl\desktop\battlefield\battlefield.cpp(30): warning C4101: 'thisx': unreferenced local variable
 c:\users\andyl\desktop\battlefield\battlefield.cpp(317): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
@@ -11,3 +12,9 @@ c:\users\andyl\desktop\battlefield\battlefield.cpp(410): warning C4244: '=': con
   Skipping... (no relevant changes detected)
   Main.cpp
   BattleField.vcxproj -> C:\Users\andyl\Desktop\Battlefield\x64\Debug\BattleField.exe
+=======
+c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(31): warning C4101: 'thisy': unreferenced local variable
+c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(31): warning C4101: 'thisx': unreferenced local variable
+c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(474): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
+  BattleField.vcxproj -> C:\Users\Clearance Bargains\Documents\GitHub\Battlefield\x64\Debug\BattleField.exe
+>>>>>>> daniel
