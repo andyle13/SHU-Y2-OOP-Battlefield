@@ -22,7 +22,7 @@ const wchar_t* BattleField::UNIT_ASSETS[NO_OF_UNITS]=
 	L"artwork\\Saboteur.bmp"
 };
 
-BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(NULL), isMoved(false), isToBePlaced(false)
+BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(NULL), isMoved(false)
 {
 	currentcell = {-1, -1}; // out of bounds
 
@@ -38,7 +38,7 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 	units.push_back(
 		new ConstructionYard(
 			UNIT_ASSETS[CONSTRUCTION_YARD],
-			{ 17, (CELLS_DOWN - 2) / 2 },
+			{ 2, (CELLS_DOWN - 2) / 2 },
 			p1->GetColour())
 	);
 	units.push_back(
@@ -84,9 +84,6 @@ void BattleField::onDraw()
 	std::list<IUnit*>::iterator it;
 	for (it = units.begin(); it != units.end(); it++)
 		drawUnit(*it);
-
-	if (isToBePlaced)
-		checkRange();
 
 	// Draw the current cell highlight if the mouse is over the game board
 	if (currentcell.x>=0 && currentcell.y>=0)
@@ -265,6 +262,10 @@ bool BattleField::canPlaceStructure(const IUnit* structure)
 			if ((*it)->GetColour() == structure->GetColour())
 			{
 				const float distsqr = calculateDistanceSqr((*it)->GetPosition(), (*it)->GetSize(), tx, ty);
+				if (structure == dynamic_cast<UnitBuilder*>(const_cast<IUnit*>(structure)))
+					displayValidMoveGrid({ (*it)->GetPosition().x, (*it)->GetPosition().y }, CELL_SIZE * 2);
+				else
+					displayValidMoveGrid({ (*it)->GetPosition().x, (*it)->GetPosition().y }, CELL_SIZE);
 				if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
 					return true;
 			}
@@ -272,6 +273,7 @@ bool BattleField::canPlaceStructure(const IUnit* structure)
 	} // measures the distances between the structure and other owned unit 
 	else {
 		const float distsqr = calculateDistanceSqr({ premovepos.x, premovepos.y }, { 1, 1 }, tx, ty);
+		displayValidMoveGrid({ premovepos.x, premovepos.y }, CELL_SIZE);
 		if (distsqr < tolerance)
 			return true;
 	} // measure the distance between the moving structure and its previous coordinate
@@ -341,15 +343,13 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				break;
 			}
 
-			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 4)) {
+			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 4))
 				toplaceunit = dynamic_cast<ConstructionYard*>(selectedunit)->GetUnit(
 					UNIT_ASSETS[unitID],
 					{ currentcell.x, currentcell.y },
 					selectedunit->GetColour(),
 					(char)nChar
 				);
-				isToBePlaced = true;
-			}
 		}
 		else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
 		{
@@ -371,15 +371,13 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 					break;
 			}
 
-			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 5)) {
+			if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 5))
 				toplaceunit = dynamic_cast<Armoury*>(selectedunit)->GetUnit(
 					UNIT_ASSETS[unitID],
 					{ currentcell.x, currentcell.y },
 					selectedunit->GetColour(),
 					(char)nChar
 				);
-				isToBePlaced = true;
-			}
 		}
 		//}
 		else if (selectedunit == dynamic_cast<Infantry*>(selectedunit)) {
@@ -388,7 +386,6 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 				case '1': {
 					// deallocate the unit from its position to move
 					isMoved = true;
-					isToBePlaced = true;
 					toplaceunit = selectedunit;
 					playarea[currentcell.x][currentcell.y] = NULL;
 					premovepos = { currentcell.x, currentcell.y };
@@ -438,11 +435,10 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 					fight();
 				} // inflict damage to opponent units once they are in the attacker's range
 				//if (for healer) { insert code }
-				isMoved = false;
 			} // deplete the unit's number of moves using the distance formular
 			addToPlayArea(toplaceunit);
 			toplaceunit = NULL;
-			isToBePlaced = false;
+			isMoved = false;
 		}
 		else
 			MessageBox(getHWND(), L"Cannot place unit there", L"BattleField", MB_ICONERROR);
@@ -509,94 +505,43 @@ const float BattleField::getSpaces(const IUnit* s) {
 		return 5.0f;
 }
 
+void BattleField::displayValidMoveGrid(Position p, int cSize)
+{
+	setPenColour(clGreen, 4);
+	selectBackColour(clGreen);
 
-void BattleField::checkRange() {
-	int i = 0, j = 0;
-	int posEnd, negEnd, unitx, unity;
+	int is;
+	int ie;	
 
-	if (toplaceunit == dynamic_cast<UnitBuilder*>(toplaceunit)) {
-		posEnd = getSpaces(toplaceunit) + 1;
-		negEnd = -getSpaces(toplaceunit) - 1;
+	if (cSize == CELL_SIZE) {
+		is = -getSpaces(toplaceunit);
+		ie = (selectedunit == dynamic_cast<UnitBuilder*>(selectedunit))
+			? getSpaces(toplaceunit) + 1: getSpaces(toplaceunit);
 	}
 	else {
-		posEnd = getSpaces(toplaceunit);
-		negEnd = -getSpaces(toplaceunit);
+		is = -getSpaces(toplaceunit) - 1;
+		ie = getSpaces(toplaceunit) + 1;
 	}
 
-	if (!isMoved) {
-		unitx = selectedunit->GetPosition().x;
-		unity = selectedunit->GetPosition().y;
-	}
-	else {
-		unitx = premovepos.x;
-		unity = premovepos.y;
-	}
+	/*structure[][]
+	[0][0] 1. check west 2. check north
+	[0][1] 1. check north 2. check east
+	[1][0] 1. check west 2. check south
+	[1][1] 1. check south 2. check east
 
-	Position p = { unitx, unity };
+	for (int i=0; i < unit->GetSize().width; i++)
+	for (int j=0; j < unit->GetSize().height; j++)
+	if (playarea[unit->GetPosition().x + i][unit->GetPosition().y + j])
 
-	for (int ax = 0; ax >= negEnd; ax--)
-		for (int ay = 0; ay >= negEnd; ay--)
-			if (!playarea[unitx + ax][unity + ay])
-				generateRangeGrid(p, ax, ay);
-				
-	if (selectedunit == dynamic_cast<UnitBuilder*>(selectedunit)) {
-		i++;
-		p = updatePosition(i, j);
-	}
-
-	for (int bx = 0; bx <= posEnd; bx++)
-		for (int by = 0; by >= negEnd; by--)
-			if (!playarea[unitx + i + bx][unity + by])
-				generateRangeGrid(p, bx, by);
-
-	if (selectedunit == dynamic_cast<UnitBuilder*>(selectedunit)) {
-		i--;
-		j++;
-		p = updatePosition(i, j);
-	}
-
-	for (int cx = 0; cx >= negEnd; cx--)
-		for (int cy = 0; cy <= posEnd; cy++)
-			if (!playarea[unitx + cx][unity + j + cy])
-				generateRangeGrid(p, cx, cy);
-
-	if (selectedunit == dynamic_cast<UnitBuilder*>(selectedunit)) {
-		i++;
-		p = updatePosition(i, j);
-	}
-
-	for (int dx = 0; dx <= posEnd; dx++)
-		for (int dy = 0; dy <= posEnd; dy++)
-			if (!playarea[unitx + i + dx][unity + j + dy])
-				generateRangeGrid(p, dx, dy);
-}
-
-void BattleField::generateRangeGrid(Position p, int i, int j) {
-	int ux, uy;
-	if (!isMoved) {
-		ux = selectedunit->GetPosition().x;
-		uy = selectedunit->GetPosition().y;
-	}
-	else {
-		ux = premovepos.x;
-		uy = premovepos.y;
-	}
-
-	// use centre locations and calculate the tolerance allowed based on width and allowed spaces
-	const float tx = ux + (selectedunit->GetSize().width / 2.0f);
-	const float ty = uy + (selectedunit->GetSize().height / 2.0f);
-	const float tolerance = pow((getSpaces(selectedunit) + selectedunit->GetSize().width), 2);
-	const float distsqr = calculateDistanceSqr({ p.x + i, p.y + j }, { 1,1 }, tx, ty);
-	if (distsqr < tolerance) {
-		setPenColour(clGreen, 4);
-		selectBackColour(clGreen);
-		drawRectangle((p.x + i) * CELL_SIZE,
-			(p.y + j) * CELL_SIZE,
-			CELL_SIZE,
-			CELL_SIZE,
-			false
-		);
-	} // draw square
+	*/
+	for(int i = is; i <= ie; i++)
+		for(int j = is; j <= ie; j++)
+			drawRectangle((p.x + i) * CELL_SIZE,
+				(p.y + j) * CELL_SIZE,
+				cSize,
+				cSize,
+				false
+			);
 }
 
 const float BattleField::calculateDistanceSqr(Position p, Size s, const float tx, const float ty) {
@@ -683,8 +628,5 @@ const bool BattleField::checkIfGameOver()
 			return false;
 		}
 	}
-}
 
-Position BattleField::updatePosition(int i, int j) {
-	return { selectedunit->GetPosition().x + i, selectedunit->GetPosition().y + j };
 }

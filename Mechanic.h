@@ -13,7 +13,7 @@ public:
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
 
-	void RestoreActions();
+	void RestoreMovements();
 
 private:
 	const wchar_t* filename;
