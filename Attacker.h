@@ -12,5 +12,6 @@ public:
 
 protected:
 	int strength, range;
+	bool hasAttacked;
 };
 

@@ -1,10 +1,35 @@
-﻿  BattleField.cpp
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(32): warning C4101: 'thisy': unreferenced local variable
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(32): warning C4101: 'thisx': unreferenced local variable
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(430): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(499): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(517): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(518): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(522): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\clearance bargains\documents\github\battlefield\battlefield.cpp(523): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-  BattleField.vcxproj -> C:\Users\Clearance Bargains\Documents\GitHub\Battlefield\x64\Debug\BattleField.exe
+﻿  Armoury.cpp
+  Generating Code...
+  Compiling...
+  UnitBuilder.cpp
+  Structure.cpp
+  Soldier.cpp
+  Saboteur.cpp
+  Medic.cpp
+  Mechanic.cpp
+  Main.cpp
+  Infantry.cpp
+  IUnit.cpp
+  Healer.cpp
+  DefenceWall.cpp
+  DefenceTurrent.cpp
+  Defence.cpp
+  ConstructionYard.cpp
+  BattleField.cpp
+c:\users\andyl\desktop\battlefield\battlefield.cpp(32): warning C4101: 'thisy': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(32): warning C4101: 'thisx': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(433): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(503): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(518): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(519): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(522): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(523): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Attacker.cpp
+c:\users\andyl\desktop\battlefield\attacker.cpp(12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\andyl\desktop\battlefield\attacker.cpp(12): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+  Generating Code...
+c:\users\andyl\desktop\battlefield\defenceturrent.cpp(18): warning C4172: returning address of local variable or temporary
+c:\users\andyl\desktop\battlefield\defenceturrent.cpp(19): warning C4172: returning address of local variable or temporary
+  Skipping... (no relevant changes detected)
+  Player.cpp
+  BattleField.vcxproj -> C:\Users\andyl\Desktop\Battlefield\x64\Debug\BattleField.exe

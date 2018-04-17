@@ -12,7 +12,10 @@ const std::string Saboteur::GetOption() const { return option; }
 const Size & Saboteur::GetSize() const { return size; }
 const wchar_t * Saboteur::GetFilename() const { return filename; }
 const int & Saboteur::GetColour() const { return colour; }
-void Saboteur::RestoreMovements() { moves = 2; }
+void Saboteur::RestoreActions() { 
+	hasAttacked = false;
+	moves = 2;
+}
 
 const int Saboteur::GetStrength() const {
 	return strength;
