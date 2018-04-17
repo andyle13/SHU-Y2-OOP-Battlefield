@@ -13,10 +13,7 @@ const std::string Soldier::GetOption() const {
 const Size & Soldier::GetSize() const { return size; }
 const wchar_t * Soldier::GetFilename() const { return filename; }
 const int & Soldier::GetColour() const { return colour; }
-void Soldier::RestoreActions() {
-	hasAttacked = false;
-	moves = 2;
-}
+void Soldier::RestoreMovements() { moves = 2; }
 
 const int Soldier::GetStrength() const {
 	return strength;

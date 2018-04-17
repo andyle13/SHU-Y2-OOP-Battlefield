@@ -6,9 +6,11 @@ public:
 	Infantry(const Position &p, const int c, int h, int m, int cos);
 	~Infantry();
 
-	virtual void RestoreActions() = 0;
+	virtual void RestoreMovements() = 0;
 	const std::string GetOption() const;
+	//bool IsValidMove(Position p);
 	int GetMoves();
+	void GetLegalMoves(Position p);
 	void DepleteMoves(int m);
 
 protected:

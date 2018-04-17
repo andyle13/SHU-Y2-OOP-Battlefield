@@ -1,8 +1,9 @@
 #include "DefenceWall.h"
 
 
-DefenceWall::DefenceWall(const wchar_t *f, const Position &p, const int c) 
-	: Defence(p, c, 200, 50), filename(f) {}
+DefenceWall::DefenceWall(const wchar_t *f, const Position &p, const int c) : Defence(p, c, 200, 50), filename(f)
+{
+}
 
 
 DefenceWall::~DefenceWall()
