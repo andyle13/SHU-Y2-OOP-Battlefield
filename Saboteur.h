@@ -16,6 +16,7 @@ public:
 
 	void RestoreMovements();
 	void Attack(IUnit * enemy);
+	bool CanAttackStruc(const IUnit* unit);
 
 private:
 	const wchar_t* filename;

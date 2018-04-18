@@ -18,6 +18,15 @@ const int Saboteur::GetStrength() const {
 	return strength;
 }
 
+bool Saboteur::CanAttackStruc(const IUnit* unit)
+{
+	if ((GetPosition().x == unit->GetPosition().x) && (GetPosition().y == unit->GetPosition().y))
+	{
+		return true;
+	}
+	return false;
+}
+
 void Saboteur::Attack(IUnit * enemy)
 {
 	if (enemy == dynamic_cast<Structure*>(enemy))

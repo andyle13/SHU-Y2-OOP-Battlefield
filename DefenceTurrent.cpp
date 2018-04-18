@@ -1,30 +1,27 @@
-#include "DefenceTurrent.h"
+#include "DefenceTurret.h"
 
 
-
-DefenceTurrent::DefenceTurrent(const wchar_t *f, const Position &p, const int c) : Defence(p, c, 200, 150), filename(f)
+DefenceTurret::DefenceTurret(const wchar_t *f, const Position &p, const int c) : Defence(p, c, 200, 150), filename(f)
 {
 }
 
 
-DefenceTurrent::~DefenceTurrent()
+DefenceTurret::~DefenceTurret()
 {
 }
 
-void DefenceTurrent::Attack(IUnit* u)
+void DefenceTurret::Attack(IUnit* u)
 {
 	u->SetHealth(-25);
 }
 
-const wchar_t * DefenceTurrent::GetFilename() const { return filename; }
+const wchar_t * DefenceTurret::GetFilename() const { return filename; }
 
-const int DefenceTurrent::GetMaxHealth() const { return maxhealth; }
-const std::string DefenceTurrent::GetName() const { return name; }
-const std::string DefenceTurrent::GetOption() const { return option; }
-const Size & DefenceTurrent::GetSize() const { return size; }
-const int & DefenceTurrent::GetColour() const { return colour; }
-
-
+const int DefenceTurret::GetMaxHealth() const { return maxhealth; }
+const std::string DefenceTurret::GetName() const { return name; }
+const std::string DefenceTurret::GetOption() const { return option; }
+const Size & DefenceTurret::GetSize() const { return Defence::size; }
+const int & DefenceTurret::GetColour() const { return Defence::colour; }
 
 /*
 const bool DefenceTurrent::CanAttack(IUnit* u) const

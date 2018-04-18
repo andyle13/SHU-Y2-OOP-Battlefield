@@ -6,6 +6,7 @@ public:
 	Healer(const Position &p, const int c, int h, int m);
 	~Healer();
 	void Heal(IUnit* unit);
+	bool Healer::CanHeal(const IUnit* unit);
 
 protected:
 

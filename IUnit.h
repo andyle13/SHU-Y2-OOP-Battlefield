@@ -25,7 +25,8 @@ public:
 	virtual const Position & GetPosition() const;
 	virtual const int & GetHealth() const;
 	virtual const int & GetColour() const;
-	void SetPosition(int x, int y);
+	virtual void SetPosition(Position p);
+
 	void SetHealth(int changeHealth);
 	void DecreaseHealth(int damage);
 

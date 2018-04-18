@@ -2,7 +2,7 @@
 #include "UnitBuilder.h"
 #include "Armoury.h"
 #include "DefenceWall.h"
-#include "DefenceTurrent.h"
+#include "DefenceTurret.h"
 
 ConstructionYard::ConstructionYard(const wchar_t *f, const Position &p, const int c)
 	: UnitBuilder(p, c, 1000, -1), filename(f) {}
@@ -24,7 +24,7 @@ IUnit * ConstructionYard::GetUnit(const wchar_t *f, const Position &p, const int
 	case '2':
 		return new DefenceWall(f, p, c);
 	case '3':
-		return new DefenceTurrent(f, p, c);
+		return new DefenceTurret(f, p, c);
 	default:
 		return nullptr;
 	}

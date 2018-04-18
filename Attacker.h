@@ -8,7 +8,7 @@ public:
 
 	virtual void Attack(IUnit * enemy) = 0;
 	virtual const int GetStrength() const = 0;
-	bool CanAttack(IUnit* enemy);
+	virtual bool CanAttack(IUnit* enemy);
 
 protected:
 	int strength, range;
