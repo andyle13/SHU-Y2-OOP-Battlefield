@@ -17,6 +17,8 @@ public:
 	void RestoreActions();
 	void Attack(IUnit * enemy);
 
+	void Promote();
+
 private:
 	const wchar_t* filename;
 	const int maxhealth = 150;

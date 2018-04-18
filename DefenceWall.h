@@ -15,6 +15,8 @@ public:
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
 
+	void RestoreActions();
+
 private:
 	const wchar_t* filename;
 	const int maxhealth = 200;

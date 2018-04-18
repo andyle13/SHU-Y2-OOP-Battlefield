@@ -2,7 +2,7 @@
 #include "Defence.h"
 #include "Attacker.h"
 class DefenceTurrent :
-	public Defence, public Attacker
+	public Defence/*, public Attacker*/
 {
 public:
 	DefenceTurrent(const wchar_t *f, const Position &p, const int c);

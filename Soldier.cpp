@@ -1,7 +1,7 @@
 #include "Soldier.h"
 
 Soldier::Soldier(const wchar_t *f, const Position &p, const int c)
-	: Attacker(p, c, 150, 10, 2, 2, 100), filename(f) {}
+	: Attacker(p, c, 150, 10, 2, 2, 100, "Novice"), filename(f) {}
 
 Soldier::~Soldier() {}
 
@@ -13,6 +13,7 @@ const std::string Soldier::GetOption() const {
 const Size & Soldier::GetSize() const { return size; }
 const wchar_t * Soldier::GetFilename() const { return filename; }
 const int & Soldier::GetColour() const { return colour; }
+
 void Soldier::RestoreActions() {
 	hasAttacked = false;
 	moves = 2;
@@ -24,4 +25,29 @@ const int Soldier::GetStrength() const {
 
 void Soldier::Attack(IUnit * enemy) {
 	enemy->DecreaseHealth(strength);
+	hasAttacked = true;
+	if (enemy->GetHealth() <= 0) {
+		killstreak++;
+		Promote();
+	}
+}
+
+void Soldier::Promote() {
+	switch (killstreak) {
+	case 3:
+		rank = "Experienced Warrior";
+		strength = 20;
+		moves++;
+		break;
+	case 7:
+		rank = "Elite Soldier";
+		strength = 35;
+		moves++;
+		break;
+	case 13:
+		rank = "Legend";
+		strength = 50;
+		moves++;
+		break;
+	}
 }
