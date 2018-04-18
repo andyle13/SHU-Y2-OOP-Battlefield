@@ -21,7 +21,6 @@ bool Attacker::DetermineWeakestEnemy(IUnit * enemy) {
 	} // measures the distances between the structure and opponent units
 	return false;
 }
-
 const bool Attacker::CanAttack() const {
 	return hasAttacked;
 }

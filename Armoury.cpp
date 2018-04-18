@@ -21,7 +21,6 @@ void Armoury::RestoreActions() {
 }
 
 IUnit * Armoury::GetUnit(const wchar_t * f, const Position & p, const int c, char id) {
-	hasPlaced = true;
 	switch (id)
 	{
 	case '1':

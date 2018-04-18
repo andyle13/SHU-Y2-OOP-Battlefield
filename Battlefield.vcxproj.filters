@@ -105,14 +105,14 @@
     <ClCompile Include="DefenceWall.cpp">
       <Filter>Source Files\Units\Structure\Defense</Filter>
     </ClCompile>
-    <ClCompile Include="DefenceTurrent.cpp">
-      <Filter>Source Files\Units\Structure\Defense</Filter>
-    </ClCompile>
     <ClCompile Include="Structure.cpp">
       <Filter>Source Files\Units\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Mechanic.cpp">
       <Filter>Source Files\Units\Infantry\Healer</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenceTurret.cpp">
+      <Filter>Source Files\Units\Structure\Defense</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

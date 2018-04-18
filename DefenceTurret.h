@@ -1,12 +1,8 @@
 #pragma once
 #include "Defence.h"
 #include "Attacker.h"
-<<<<<<< HEAD:DefenceTurrent.h
-class DefenceTurrent :
-	public Defence/*, public Attacker*/
-=======
+
 class DefenceTurret : public Defence
->>>>>>> daniel:DefenceTurret.h
 {
 public:
 	DefenceTurret(const wchar_t *f, const Position &p, const int c);

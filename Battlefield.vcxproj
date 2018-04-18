@@ -152,7 +152,7 @@
     <ClCompile Include="BattleField.cpp" />
     <ClCompile Include="ConstructionYard.cpp" />
     <ClCompile Include="Defence.cpp" />
-    <ClCompile Include="DefenceTurrent.cpp" />
+    <ClCompile Include="DefenceTurret.cpp" />
     <ClCompile Include="DefenceWall.cpp" />
     <ClCompile Include="EasyGraphics.cpp" />
     <ClCompile Include="Healer.cpp" />

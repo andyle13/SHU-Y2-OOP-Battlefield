@@ -19,3 +19,7 @@ const int & UnitBuilder::GetHealth() const
 const bool UnitBuilder::CanPlaceUnit() const {
 	return hasPlaced;
 }
+
+void UnitBuilder::UnitPlaced() {
+	hasPlaced = true;
+}

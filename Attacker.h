@@ -9,13 +9,9 @@ public:
 	virtual void Promote() = 0;
 	virtual void Attack(IUnit * enemy) = 0;
 	virtual const int GetStrength() const = 0;
-<<<<<<< HEAD
 	bool DetermineWeakestEnemy(IUnit* enemy);
 
 	const bool CanAttack() const;
-=======
-	virtual bool CanAttack(IUnit* enemy);
->>>>>>> daniel
 
 protected:
 	int strength, range, killstreak;

@@ -21,7 +21,6 @@ void ConstructionYard::RestoreActions() {
 }
 
 IUnit * ConstructionYard::GetUnit(const wchar_t *f, const Position &p, const int c, char id) {
-	hasPlaced = true;
 	switch (id)
 	{
 	case '1':
@@ -29,11 +28,7 @@ IUnit * ConstructionYard::GetUnit(const wchar_t *f, const Position &p, const int
 	case '2':
 		return new DefenceWall(f, p, c);
 	case '3':
-<<<<<<< HEAD
-		//return new DefenceWall(f, p, c);//new DefenceTurrent(f, p, c);
-=======
 		return new DefenceTurret(f, p, c);
->>>>>>> daniel
 	default:
 		return nullptr;
 	}
