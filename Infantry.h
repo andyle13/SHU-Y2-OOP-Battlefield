@@ -9,6 +9,14 @@ public:
 <<<<<<< HEAD
 	const std::string GetOption() const;
 	int GetMoves();
+=======
+	virtual void RestoreMovements() = 0;
+	Position GetOldPosition();
+	const std::string GetOption() const;
+	int GetMoves();
+	void SetPosition(Position p);
+	void SetOldPosition(Position p);
+>>>>>>> daniel
 	void DepleteMoves(int m);
 	bool UnitOnStructure(const IUnit* unit);
 	bool CanMove(IUnit * unit);
