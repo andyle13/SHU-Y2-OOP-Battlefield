@@ -15,6 +15,7 @@ public:
 	IUnit(const Position & p, const int c, int h, int cos);
 	virtual ~IUnit() = 0;
 
+	virtual void RestoreActions() = 0;
 	virtual const wchar_t * GetFilename() const = 0;
 	virtual const int GetMaxHealth() const = 0;
 	virtual const std::string GetName() const = 0;

@@ -1,11 +1,11 @@
 #include "Attacker.h"
 
-Attacker::Attacker(const Position &p, const int c, int h, int s, int m, int r, int cost)
-	: Infantry(p, c, h, m, cost), strength(s), range(r), hasAttacked(false) {}
+Attacker::Attacker(const Position &p, const int c, int h, int s, int m, int r, int cost, std::string rk)
+	: Infantry(p, c, h, m, cost), strength(s), range(r), rank(rk), killstreak(0), hasAttacked(false) {}
 
 Attacker::~Attacker() {}
 
-bool Attacker::CanAttack(IUnit * enemy) {
+bool Attacker::DetermineWeakestEnemy(IUnit * enemy) {
 	if (colour != enemy->GetColour()) {
 		const float tx = position.x + (size.width / 2.0f);
 		const float ty = position.y + (size.height / 2.0f);
@@ -20,4 +20,8 @@ bool Attacker::CanAttack(IUnit * enemy) {
 			return true;
 	} // measures the distances between the structure and opponent units
 	return false;
+}
+
+const bool Attacker::CanAttack() const {
+	return hasAttacked;
 }

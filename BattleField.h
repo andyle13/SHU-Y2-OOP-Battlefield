@@ -91,16 +91,17 @@ private:
 
   const float getSpaces(const IUnit * s);
   void checkRange();
-  void generateRangeGrid(Position p, int i, int j);
+  void findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, int uy);
+  void generateRangeGrid(IUnit * c, Position p, int i, int j);
   const float calculateDistanceSqr(Position p, Size s, const float tx, const float ty);
   void fight();
   void eliminateEnemy(IUnit * killedunit);
   void signalAttack(IUnit * enemy);
-  void displayValidMoveGrid(Position p, int cSize);
 
 	const bool existInList(const IUnit* unit);
 	const bool checkIfGameOver();
-	Position updatePosition(int i, int j);
+	const bool isDistanceValid(IUnit * source, const IUnit * destination);
+	Position updatePosition(IUnit * c, int i, int j);
 	const bool isPlayerTurn(const IUnit* u);
 };
 
