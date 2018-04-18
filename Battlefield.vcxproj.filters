@@ -164,11 +164,11 @@
     <ClInclude Include="Defence.h">
       <Filter>Header Files\Units\Structure\Defense</Filter>
     </ClInclude>
-    <ClInclude Include="DefenceTurrent.h">
-      <Filter>Header Files\Units\Structure\Defense</Filter>
-    </ClInclude>
     <ClInclude Include="Structure.h">
       <Filter>Header Files\Units\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenceTurret.h">
+      <Filter>Header Files\Units\Structure\Defense</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

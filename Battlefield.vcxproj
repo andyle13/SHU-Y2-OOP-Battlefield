@@ -173,7 +173,7 @@
     <ClInclude Include="BattleField.h" />
     <ClInclude Include="ConstructionYard.h" />
     <ClInclude Include="Defence.h" />
-    <ClInclude Include="DefenceTurrent.h" />
+    <ClInclude Include="DefenceTurret.h" />
     <ClInclude Include="DefenceWall.h" />
     <ClInclude Include="EasyGraphics.h" />
     <ClInclude Include="Healer.h" />

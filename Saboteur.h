@@ -16,6 +16,7 @@ public:
 
 	void RestoreActions();
 	void Attack(IUnit * enemy);
+	bool CanAttackStruc(const IUnit* unit);
 
 	void Promote();
 

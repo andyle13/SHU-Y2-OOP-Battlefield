@@ -10,8 +10,8 @@ const Position & IUnit::GetPosition() const { return position; }
 const int & IUnit::GetHealth() const { return health; }
 const int & IUnit::GetColour() const { return colour; }
 
-void IUnit::SetPosition(int setX, int setY) {
-	position = { setX, setY };
+void IUnit::SetPosition(Position p) {
+	position = p;
 }
 
 void IUnit::SetHealth(int changeHealth) {
