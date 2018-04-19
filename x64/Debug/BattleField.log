@@ -1,13 +1,16 @@
 ﻿  BattleField.cpp
-c:\users\andyl\desktop\battlefield\battlefield.cpp(34): warning C4066: characters beyond first in wide-character constant ignored
 c:\users\andyl\desktop\battlefield\battlefield.cpp(35): warning C4066: characters beyond first in wide-character constant ignored
-c:\users\andyl\desktop\battlefield\battlefield.cpp(32): warning C4101: 'thisy': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(32): warning C4101: 'thisx': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(276): warning C4101: 'unitID': unreferenced local variable
-c:\users\andyl\desktop\battlefield\battlefield.cpp(369): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(441): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(454): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(455): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(458): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\andyl\desktop\battlefield\battlefield.cpp(459): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(36): warning C4066: characters beyond first in wide-character constant ignored
+c:\users\andyl\desktop\battlefield\battlefield.cpp(33): warning C4101: 'thisy': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(33): warning C4101: 'thisx': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(283): warning C4101: 'unitID': unreferenced local variable
+c:\users\andyl\desktop\battlefield\battlefield.cpp(375): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(448): warning C4244: 'return': conversion from 'int' to 'const float', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(461): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(462): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(465): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\andyl\desktop\battlefield\battlefield.cpp(466): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Main.cpp
   BattleField.vcxproj -> C:\Users\andyl\Desktop\Battlefield\x64\Debug\BattleField.exe

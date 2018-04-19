@@ -8,18 +8,18 @@ public:
 
 	const std::string GetOption() const;
 	int GetMoves();
-	Position GetOldPosition();
 
 	void SetPosition(Position p);
-	void SetOldPosition(Position p);
 	void DepleteMoves(int m);
-	bool UnitOnStructure(const IUnit* unit);
-	void SetPosition2(Position p);
+	void CheckUnitOnStructure(const IUnit* unit);
+
+	void Move();
 
 protected:
 	Position oldPosition;
 	Size size;
 	int moves;
+	bool isOnStructure, isMoving;
 	const std::string option = "1) Move";
 };
 

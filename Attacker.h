@@ -9,6 +9,8 @@ public:
 	virtual void Promote() = 0;
 	virtual void Attack(IUnit * enemy) = 0;
 	virtual const int GetStrength() const = 0;
+	const int GetKills() const;
+	const std::string GetRank() const;
 	bool DetermineWeakestEnemy(IUnit* enemy);
 
 	const bool CanAttack() const;

@@ -27,7 +27,7 @@ protected:
 	virtual void onChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 private:
-	static const int CELL_SIZE=20;  // size of a cell will be 20 pixels
+	static const int CELL_SIZE=30;  // size of a cell will be 20 pixels
 	static const int CELLS_ACROSS=35; // number of cells in the x-direction
 	static const int CELLS_DOWN=20; // number of cells in the y-direction
 	static const int PLAYER_ONE_COLOUR=clDarkRed;
@@ -98,8 +98,9 @@ private:
   void findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, int uy);
   void generateRangeGrid(IUnit * c, Position p, int i, int j);
   const float calculateDistanceSqr(Position p, Size s, const float tx, const float ty);
-  void fight();
-  void heal();
+  void heal(IUnit * c);
+  void fight(IUnit * c);
+  void checkUnitOnStructure(IUnit * c);
   void eliminateEnemy(IUnit * killedunit);
   void signalAttack(IUnit * enemy);
 

@@ -24,3 +24,15 @@ bool Attacker::DetermineWeakestEnemy(IUnit * enemy) {
 const bool Attacker::CanAttack() const {
 	return hasAttacked;
 }
+
+const int Attacker::GetStrength() const {
+	return strength;
+}
+
+const int Attacker::GetKills() const {
+	return killstreak;
+}
+
+const std::string Attacker::GetRank() const {
+	return rank;
+}
