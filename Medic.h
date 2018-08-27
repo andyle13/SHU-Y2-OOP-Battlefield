@@ -3,7 +3,7 @@
 class Medic : public Healer
 {
 public:
-	Medic(const wchar_t *f, const Position &p, const int c);
+	Medic(const wchar_t *f, const Position &p, const int & c);
 	~Medic();
 
 	const int GetMaxHealth() const;
@@ -19,5 +19,5 @@ private:
 	const wchar_t* filename;
 	const int maxhealth = 60;
 	const std::string name = "Medic";
-	const std::string option = "Move medic or right-click to deselect";
+	const std::string option = "Heal: Place the medic on a friendly infantry to heal.";
 };

@@ -8,9 +8,11 @@
 #include "Medic.h"
 #include "Mechanic.h"
 #include "Structure.h"
+#include "Factory.h"
+
 // the index of each asset must align with the constant used to identify that particular unit, 
 // e.g. static const int DEFENCE_TURRET=3; means that the asset for the defence turret must be in index 3
-const wchar_t* BattleField::UNIT_ASSETS[NO_OF_UNITS]=
+const wchar_t* BattleField::UNIT_ASSETS[NO_OF_UNITS] =
 {
 	L"artwork\\ConstructionYard.bmp",
 	L"artwork\\Armoury.bmp",
@@ -19,18 +21,20 @@ const wchar_t* BattleField::UNIT_ASSETS[NO_OF_UNITS]=
 	L"artwork\\Soldier.bmp",
 	L"artwork\\Medic.bmp",
 	L"artwork\\Mechanic.bmp",
-	L"artwork\\Saboteur.bmp"
+	L"artwork\\Saboteur.bmp",
+	L"artwork\\Truck.bmp",
+	L"artwork\\Factory.bmp",
+	L"artwork\\Tank.bmp"
 };
 
 BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(NULL), isMoved(false), isToPlace(false)
 {
-	currentcell = {-1, -1}; // out of bounds
+	currentcell = { -1, -1 }; // out of bounds
 
-	// create two initial construction yard structures - I am using colour to determine which unit belongs to which player... a little bit of a fudge
+	// create two initial construction yard structures
 	turn = 0;
 	noofunits = 2;
-	int thisx, thisy;
-	
+
 	p1 = new Player(L'Player 1', PLAYER_ONE_COLOUR);
 	p2 = new Player(L'Player 2', PLAYER_TWO_COLOUR);
 	player = p1;
@@ -38,33 +42,60 @@ BattleField::BattleField(HINSTANCE hInstance) : selectedunit(NULL), toplaceunit(
 	units.push_back(
 		new ConstructionYard(
 			UNIT_ASSETS[CONSTRUCTION_YARD],
-			{ 17, (CELLS_DOWN - 2) / 2 },
+			{ 2, (CELLS_DOWN - 2) / 2 },
 			p1->GetColour())
 	);
 	units.push_back(
 		new ConstructionYard(
-			UNIT_ASSETS[CONSTRUCTION_YARD], 
-			{ CELLS_ACROSS - 4, (CELLS_DOWN - 2) / 2 }, 
+			UNIT_ASSETS[CONSTRUCTION_YARD],
+			{ CELLS_ACROSS - 4, (CELLS_DOWN - 2) / 2 },
 			p2->GetColour())
 	);
 	updatePlayArea();
 	setImmediateDrawMode(false);
 
 	// remember to call this method last as it goes modal and doesn't return until the window is closed
-	create(hInstance, (CELLS_ACROSS*CELL_SIZE)+16, (CELLS_DOWN*CELL_SIZE)+8*CELL_SIZE, 120, true);
+	create(hInstance, (CELLS_ACROSS*CELL_SIZE) + 16, (CELLS_DOWN*CELL_SIZE) + 8 * CELL_SIZE, 120, true);
 }
 
 BattleField::~BattleField()
 {
+	std::list<IUnit*>::iterator it;
+	for (it = units.begin(); it != units.end(); it++) {
+		delete *it;
+		(*it) = NULL;
+	}
+
 	std::list<IUnit*>::iterator unitIT;
 	for (unitIT = units.begin(); unitIT != units.end(); unitIT++)
+	{
 		delete (*unitIT);
-	
+	}
 
-	// This keeps crashing the program when it closes
-	/*
-	for (unitIT = tempunits.begin(); unitIT != tempunits.end(); unitIT++)
-		delete (*unitIT);*/
+	if (p1 != NULL) {
+		delete p1;
+	}
+	if (p2 != NULL) {
+		delete p2;
+	}
+	if (player) {
+		player = NULL;
+		delete player;
+	}
+	if (selectedunit) {
+		selectedunit = NULL;
+		delete selectedunit;
+	}
+	if (tomoveunit)
+	{
+		tomoveunit = NULL;
+		delete tomoveunit;
+	}
+
+	if (toplaceunit) {
+		toplaceunit = NULL;
+		delete toplaceunit;
+	}
 }
 
 void BattleField::onCreate()
@@ -88,29 +119,50 @@ void BattleField::onDraw()
 	if (isToPlace) checkRange();
 
 	// Draw the current cell highlight if the mouse is over the game board
-	if (currentcell.x>=0 && currentcell.y>=0)
+	if (currentcell.x >= 0 && currentcell.y >= 0)
 	{
 		setPenColour(clWhite, 2);
 		drawRectangle(currentcell.x*CELL_SIZE, currentcell.y*CELL_SIZE, CELL_SIZE, CELL_SIZE, false);
+		if (playarea[currentcell.x][currentcell.y]) {
+			IUnit *mydetails = playarea[currentcell.x][currentcell.y];
+			int colourx;
+			if (mydetails->GetColour() == player->GetColour())
+				colourx = 3;
+			else
+				colourx = -3;
+
+			selectBackColour(mydetails->GetColour());
+			selectTextColour(clWhite);
+			gotoxy((currentcell.x + colourx) * (CELL_SIZE / getPixelsPerColumn()), (currentcell.y + 2) * (CELL_SIZE / getPixelsPerRow()));
+			(*this) << "Unit: " << mydetails->GetName();
+			gotoxy((currentcell.x + colourx) * (CELL_SIZE / getPixelsPerColumn()), (currentcell.y + 3) * (CELL_SIZE / getPixelsPerRow()));
+			(*this) << "HP: " << mydetails->GetHealth() << "/" << mydetails->GetMaxHealth();
+			if (mydetails == dynamic_cast<Attacker*>(mydetails)) {
+				gotoxy((currentcell.x + colourx) * (CELL_SIZE / getPixelsPerColumn()), (currentcell.y + 4) * (CELL_SIZE / getPixelsPerRow()));
+				(*this) << "Rank: " << dynamic_cast<Attacker*>(mydetails)->GetRank();
+				gotoxy((currentcell.x + colourx) * (CELL_SIZE / getPixelsPerColumn()), (currentcell.y + 5) * (CELL_SIZE / getPixelsPerRow()));
+				(*this) << "Kills: " << dynamic_cast<Attacker*>(mydetails)->GetKills();
+			}
+		}
 	}
 
 	if (selectedunit && selectedunit == dynamic_cast<Infantry*>(selectedunit))
 	{
-		int dx=selectedunit->GetPosition().x-currentcell.x;
-		int dy=selectedunit->GetPosition().y-currentcell.y;
-    
-		bool valid=true;
+		int dx = selectedunit->GetPosition().x - currentcell.x;
+		int dy = selectedunit->GetPosition().y - currentcell.y;
+
+		bool valid = true;
 		if (dx == 0 && dy == 0)
 			valid = false;
 		else
 			valid = true;
-    
+
 		if (!valid)
 			drawRedCross(currentcell.x, currentcell.y, selectedunit->GetSize().width, selectedunit->GetSize().height);
 	}
 
 	// draw the toplaceunit if there is one and the location is valid
-	if (toplaceunit && currentcell.x != -1 && currentcell.x+toplaceunit->GetSize().width <= CELLS_ACROSS && currentcell.y+toplaceunit->GetSize().height <= CELLS_DOWN)
+	if (toplaceunit && currentcell.x != -1 && currentcell.x + toplaceunit->GetSize().width <= CELLS_ACROSS && currentcell.y + toplaceunit->GetSize().height <= CELLS_DOWN)
 	{
 		toplaceunit->SetPosition({ currentcell.x, currentcell.y });
 		drawUnit(toplaceunit);
@@ -188,9 +240,8 @@ bool BattleField::canMoveUnit(const IUnit* unit)
 						return false;
 					}
 				}
-	}/*
-	if ((unitType == 1) || (unitType == 2) || (unitType == 3))
-		updatePlayArea();*/
+	}
+
 	return true;
 }
 
@@ -201,12 +252,12 @@ bool BattleField::canPlaceStructure(const IUnit* structure)
 	const float tx = structure->GetPosition().x + (structure->GetSize().width / 2.0f);
 	const float ty = structure->GetPosition().y + (structure->GetSize().height / 2.0f);
 	const float tolerance = pow((getSpaces(structure) + structure->GetSize().width), 2);
-	
+
 	if (!isMoved) {
 		std::list<IUnit*>::iterator it;
 		for (it = units.begin(); it != units.end(); it++)
 		{
-			if(isDistanceValid(*it, structure))
+			if (isDistanceValid(*it, structure))
 			{
 				const float distsqr = calculateDistanceSqr((*it)->GetPosition(), (*it)->GetSize(), tx, ty);
 				if (distsqr < tolerance) // don't bother to sqrt distsqr, just sqr both sides of the equation for speed
@@ -219,17 +270,17 @@ bool BattleField::canPlaceStructure(const IUnit* structure)
 		if (distsqr < tolerance)
 			return true;
 	} // measure the distance between the moving structure and its previous coordinate
-	
+
 	return false;
 }
 
 void BattleField::drawUnit(const IUnit* unit)
 {
-	const int x=unit->GetPosition().x*CELL_SIZE;
-	const int y=unit->GetPosition().y*CELL_SIZE;
-	const int width=unit->GetSize().width*CELL_SIZE;
-	const int height=unit->GetSize().height*CELL_SIZE;
-	if (unit==selectedunit)
+	const int x = unit->GetPosition().x*CELL_SIZE;
+	const int y = unit->GetPosition().y*CELL_SIZE;
+	const int width = unit->GetSize().width*CELL_SIZE;
+	const int height = unit->GetSize().height*CELL_SIZE;
+	if (unit == selectedunit)
 		setPenColour(clGrey, 4);
 	else
 		setPenColour(unit->GetColour(), 2);
@@ -241,15 +292,14 @@ void BattleField::drawUnit(const IUnit* unit)
 void BattleField::drawStatus()
 {
 	// Draw status information
-	gotoxy(0, 1+(CELLS_DOWN*CELL_SIZE)/getPixelsPerRow());
+	gotoxy(0, 1 + (CELLS_DOWN*CELL_SIZE) / getPixelsPerRow());
 	selectTextColour(clWhite);
 	selectBackColour(clBlack);
 
-	if (selectedunit)
-	{
-		(*this) << "Player " << (selectedunit->GetColour() == PLAYER_ONE_COLOUR? "1" : "2") << ": " << selectedunit->GetName() << "\n";
+	if (selectedunit) {
+		(*this) << "Player " << (selectedunit->GetColour() == PLAYER_ONE_COLOUR ? "1" : "2") << ": " << selectedunit->GetName() << "\n";
 		(*this) << "Health: " << selectedunit->GetHealth() << " of " << selectedunit->GetMaxHealth() << "\n";
-		(*this) << selectedunit->GetOption() << "\n";
+		if (isPlayerTurn(selectedunit))	(*this) << selectedunit->GetOption() << "\n";
 	}
 	else
 	{
@@ -273,13 +323,14 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (selectedunit)
 				if (isPlayerTurn(selectedunit))
 				{
-					int unitID;
 					if (selectedunit->GetFilename() == UNIT_ASSETS[CONSTRUCTION_YARD])
 						createStructure(nChar);
 					else if (selectedunit->GetFilename() == UNIT_ASSETS[ARMOURY])
 						createInfantry(nChar);
-					else if (selectedunit == dynamic_cast<Infantry*>(selectedunit))
-						moveInfantry(nChar);
+					else if (selectedunit->GetFilename() == UNIT_ASSETS[FACTORY])
+						createVehicle(nChar);
+					else if (selectedunit == dynamic_cast<Infantry*>(selectedunit) || selectedunit == dynamic_cast<Vehicle*>(selectedunit))
+						moveUnit(nChar);
 				}
 		onDraw();
 	}
@@ -290,16 +341,12 @@ void BattleField::onChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 		else if (winner == 2)
 			MessageBox(getHWND(), L"Winner: " + player->GetName(), L"BattleField", MB_ICONERROR);
 	}
-	/*if (nChar == '0') {
-		(*this) << "Do you want to end your turn?\n1.) Yes\n2.)\n";
-		if (endTurn((char)nChar)) {
-
-		}
-	}*/
 }
 
 void BattleField::changePlayer()
 {
+	endTurn();
+
 	// RESET UNITS BUILT IN ARMOURY
 	turn = turn % 2;
 	if (turn == 0) player = p1;
@@ -310,35 +357,32 @@ void BattleField::changePlayer()
 
 const bool BattleField::isPlayerTurn(const IUnit* u)
 {
-	return ((*player).GetColour() == (*u).GetColour());
+	return (player->GetColour() == u->GetColour());
 }
 
 void BattleField::startTurn() {
 	std::list<IUnit*>::iterator it;
-	for (it = units.begin(); it != units.end(); it++)
-	{
+	for (it = units.begin(); it != units.end(); it++) {
 		(*it)->RestoreActions();
-
-		if ((*it) == dynamic_cast<Infantry*>(*it))
-			if ((dynamic_cast<Infantry*>(*it))->UnitOnStructure(*it))
-				if (((*it) == dynamic_cast<Mechanic*>(*it)) || ((*it) == dynamic_cast<Saboteur*>(*it)))
-				{
-					(*it)->SetPosition(dynamic_cast<Infantry*>(*it)->GetOldPosition());
-					drawUnit(*it);
-					addToPlayArea(*it);
-					onDraw();
-				}
+		if (*it == dynamic_cast<Mechanic*>(*it) || *it == dynamic_cast<Saboteur*>(*it)) {
+			drawUnit(*it);
+			addToPlayArea(*it);
+			onDraw();
+		}
 	}
 }
 
 void BattleField::endTurn() {
-	if (toplaceunit == dynamic_cast<Attacker*>(toplaceunit))
-		fight(); // inflict damage to opponent units once they are in the attacker's range
-	if (toplaceunit == dynamic_cast<Healer*>(toplaceunit))
-		heal();
+	std::list<IUnit*>::iterator it;
+	for (it = units.begin(); it != units.end(); it++) {
+		if (*it == dynamic_cast<Mechanic*>(*it) || *it == dynamic_cast<Saboteur*>(*it))
+			checkUnitOnStructure(*it);
+		if (*it == dynamic_cast<Attacker*>(*it))
+			fight(*it); // inflict damage to opponent units once they are in the attacker's range
+		if (*it == dynamic_cast<Healer*>(*it))
+			heal(*it);
+	}
 }
-
-
 
 void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 {
@@ -366,10 +410,8 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 			else {
 				isMoved = false;
 				dynamic_cast<Infantry*>(toplaceunit)->DepleteMoves(
-					sqrt(pow((toplaceunit->GetPosition().x - premovepos.x), 2)
-						+ pow((toplaceunit->GetPosition().y - premovepos.y), 2)
-					)
-				);
+				getDistanceDifference({ premovepos.x, premovepos.y }, toplaceunit->GetPosition()));
+				//dynamic_cast<Infantry*>(toplaceunit).CheckPosition()
 			} // deplete the unit's number of moves using the distance formular
 			addToPlayArea(toplaceunit);
 			toplaceunit = NULL;
@@ -380,7 +422,7 @@ void BattleField::onLButtonDown(UINT nFlags, int x, int y)
 	}
 	else
 	{
-		if (currentcell.x>=0 && currentcell.y>=0)
+		if (currentcell.x >= 0 && currentcell.y >= 0)
 			selectedunit = playarea[currentcell.x][currentcell.y];
 	}
 	onDraw();
@@ -390,15 +432,14 @@ void BattleField::onRButtonDown(UINT nFlags, int x, int y)
 {
 	if (toplaceunit)
 	{
-		if (!isMoved)
-			free(toplaceunit);
-		else {
+		if (isMoved)  {
 			toplaceunit->SetPosition({ premovepos.x, premovepos.y });
 			drawUnit(toplaceunit);
 			addToPlayArea(toplaceunit);
 			isMoved = false;
 		} // return unit to previous position
 		toplaceunit = NULL;
+		free(toplaceunit);
 	}
 	else if (selectedunit) {
 		selectedunit = NULL;
@@ -411,12 +452,12 @@ void BattleField::onRButtonDown(UINT nFlags, int x, int y)
 
 void BattleField::onMouseMove(UINT nFlags, int x, int y)
 {
-	x/=CELL_SIZE;
-	y/=CELL_SIZE;
-	if (x>=0 && x<CELLS_ACROSS && y>=0 && y<CELLS_DOWN)
-		currentcell={x, y};
+	x /= CELL_SIZE;
+	y /= CELL_SIZE;
+	if (x >= 0 && x<CELLS_ACROSS && y >= 0 && y<CELLS_DOWN)
+		currentcell = { x, y };
 	else
-		currentcell={-1, -1};
+		currentcell = { -1, -1 };
 
 	// redraw the screen to refresh highlight
 	onDraw();
@@ -425,9 +466,9 @@ void BattleField::onMouseMove(UINT nFlags, int x, int y)
 void BattleField::updatePlayArea()
 {
 	// Reset the play area
-	for (int i=0; i<CELLS_ACROSS; i++)
-		for (int j=0; j<CELLS_DOWN; j++)
-			playarea[i][j]=NULL;
+	for (int i = 0; i<CELLS_ACROSS; i++)
+		for (int j = 0; j<CELLS_DOWN; j++)
+			playarea[i][j] = NULL;
 
 	// Put the units onto the play area - using memory references to make it easier to manipulate the unit
 	std::list<IUnit*>::iterator it;
@@ -435,28 +476,16 @@ void BattleField::updatePlayArea()
 		addToPlayArea(*it);
 }
 
-const float BattleField::getSpaces(const IUnit* s) {
-	if (isMoved)
-		// determine maximum amount of moves
-		return dynamic_cast<Infantry*>(const_cast<IUnit*>(s))->GetMoves();
-	else if (s == dynamic_cast<Infantry*>(const_cast<IUnit*>(s)))
-		// place infantry next to armoury
-		return 1.0f;
-	else
-		// place armoury at max. five spaces away from construction yard
-		return 5.0f;
-}
-
 void BattleField::checkRange() {
 	int posEnd, negEnd, unitx, unity;
 
-	if (toplaceunit == dynamic_cast<UnitBuilder*>(toplaceunit)) {
-		posEnd = getSpaces(toplaceunit) + 1;
-		negEnd = -getSpaces(toplaceunit) - 1;
+	if (toplaceunit == dynamic_cast<UnitBuilder*>(toplaceunit) || toplaceunit == dynamic_cast<Vehicle*>(toplaceunit)) {
+		posEnd = (int) getSpaces(toplaceunit) + 1;
+		negEnd = (int) -getSpaces(toplaceunit) - 1;
 	}
 	else {
-		posEnd = getSpaces(toplaceunit);
-		negEnd = -getSpaces(toplaceunit);
+		posEnd = (int) getSpaces(toplaceunit);
+		negEnd = (int) -getSpaces(toplaceunit);
 	}
 	if (!isMoved) {
 		std::list<IUnit*>::iterator it;
@@ -474,7 +503,7 @@ void BattleField::checkRange() {
 	}
 }
 
-void BattleField::findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, int uy) {
+void BattleField::findRange(const IUnit * c, Position p, const int & pEnd, const int & nEnd, const int & ux, const int & uy) {
 	int i = 0, j = 0;
 
 	for (int ax = 0; ax >= nEnd; ax--)
@@ -482,9 +511,9 @@ void BattleField::findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, i
 			if (!playarea[ux + ax][uy + ay])
 				generateRangeGrid(c, p, ax, ay);
 
-	if (c == dynamic_cast<UnitBuilder*>(c)) {
+	if (c == dynamic_cast<UnitBuilder*>(const_cast<IUnit*>(c)) || c == dynamic_cast<Vehicle*>(const_cast<IUnit*>(c))) {
 		i++;
-		p = updatePosition(c, i, j);
+		p = updatePosition(const_cast<IUnit*>(c), i, j);
 	}
 
 	for (int bx = 0; bx <= pEnd; bx++)
@@ -492,10 +521,10 @@ void BattleField::findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, i
 			if (!playarea[ux + i + bx][uy + by])
 				generateRangeGrid(c, p, bx, by);
 
-	if (c == dynamic_cast<UnitBuilder*>(c)) {
+	if (c == dynamic_cast<UnitBuilder*>(const_cast<IUnit*>(c)) || c == dynamic_cast<Vehicle*>(const_cast<IUnit*>(c))) {
 		i--;
 		j++;
-		p = updatePosition(c, i, j);
+		p = updatePosition(const_cast<IUnit*>(c), i, j);
 	}
 
 	for (int cx = 0; cx >= nEnd; cx--)
@@ -503,9 +532,9 @@ void BattleField::findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, i
 			if (!playarea[ux + cx][uy + j + cy])
 				generateRangeGrid(c, p, cx, cy);
 
-	if (c == dynamic_cast<UnitBuilder*>(c)) {
+	if (c == dynamic_cast<UnitBuilder*>(const_cast<IUnit*>(c)) || c == dynamic_cast<Vehicle*>(const_cast<IUnit*>(c))) {
 		i++;
-		p = updatePosition(c, i, j);
+		p = updatePosition(const_cast<IUnit*>(c), i, j);
 	}
 
 	for (int dx = 0; dx <= pEnd; dx++)
@@ -514,7 +543,7 @@ void BattleField::findRange(IUnit * c, Position p, int pEnd, int nEnd, int ux, i
 				generateRangeGrid(c, p, dx, dy);
 }
 
-void BattleField::generateRangeGrid(IUnit * c, Position p, int i, int j) {
+void BattleField::generateRangeGrid(const IUnit * c, const Position & p, const int & i, const int & j) {
 	int ux, uy;
 	if (!isMoved) {
 		ux = c->GetPosition().x;
@@ -528,7 +557,7 @@ void BattleField::generateRangeGrid(IUnit * c, Position p, int i, int j) {
 	// use centre locations and calculate the tolerance allowed based on width and allowed spaces
 	const float tx = ux + (c->GetSize().width / 2.0f);
 	const float ty = uy + (c->GetSize().height / 2.0f);
-	const float tolerance = pow((getSpaces(c) + c->GetSize().width), 2);
+	const float tolerance = (getSpaces(c) + c->GetSize().width) * (getSpaces(c) + c->GetSize().width);
 
 	if (isDistanceValid(c, toplaceunit) || isMoved) {
 		const float distsqr = calculateDistanceSqr({ p.x + i, p.y + j }, { 1,1 }, tx, ty);
@@ -545,120 +574,64 @@ void BattleField::generateRangeGrid(IUnit * c, Position p, int i, int j) {
 	}
 }
 
-const float BattleField::calculateDistanceSqr(Position p, Size s, const float tx, const float ty) {
-	const float cx = p.x + (s.width / 2.0f);
-	const float cy = p.y + (s.height / 2.0f);
-	const float dx = tx - cx;
-	const float dy = ty - cy;
-	return pow(dx, 2) + pow(dy, 2);
-}
-
-void BattleField::heal() {
+void BattleField::heal(IUnit * c) {
 	std::list<IUnit*>::iterator it;
 	for (it = units.begin(); it != units.end(); it++)
 	{
-		if ((dynamic_cast<Healer*>(toplaceunit)->CanHeal(*it)) && (dynamic_cast<Healer*>(toplaceunit) != dynamic_cast<Healer*>(*it)))
-		{
-			dynamic_cast<Healer*>(toplaceunit)->Heal(*it);
-		}
+		if ((dynamic_cast<Healer*>(c)->CanHeal(*it)) && (dynamic_cast<Healer*>(c) != dynamic_cast<Healer*>(*it)))
+			dynamic_cast<Healer*>(c)->Heal(*it);
 	}
 }
 
-void BattleField::fight() {
-	if (!dynamic_cast<Attacker*>(toplaceunit)->CanAttack()) {
-		IUnit *targetEnemy;
-
-		//if (dynamic_cast<Saboteur*>(toplaceunit)->CanAttackStruc(*it) && (*it) == dynamic_cast<Structure*>(*it)) {
-			targetEnemy = *units.begin();
-			std::list<IUnit*>::iterator it;
-			for (it = units.begin(); it != units.end(); it++)
-			{
-				if (dynamic_cast<Attacker*>(toplaceunit)->DetermineWeakestEnemy(*it))
-					if (targetEnemy->GetHealth() > (*it)->GetHealth())
-						targetEnemy = *it;
+void BattleField::fight(IUnit * c) {
+	if (!dynamic_cast<Attacker*>(c)->CanAttack()) {
+		IUnit *targetEnemy = *units.begin();
+		std::list<IUnit*>::iterator it;
+		for (it = units.begin(); it != units.end(); it++) {
+			if (dynamic_cast<Attacker*>(c)->DetermineWeakestEnemy(*it)) {
+				if ((targetEnemy->GetHealth()) >= ((*it)->GetHealth())) {
+					targetEnemy = (*it);
+				}
 			}
-			if (toplaceunit != dynamic_cast<Saboteur*>(toplaceunit) && targetEnemy != dynamic_cast<Structure*>(targetEnemy))
-				dynamic_cast<Attacker*>(toplaceunit)->Attack(targetEnemy);
-			else if (toplaceunit == dynamic_cast<Saboteur*>(toplaceunit) && targetEnemy != dynamic_cast<Structure*>(targetEnemy))
-				dynamic_cast<Attacker*>(toplaceunit)->Attack(targetEnemy);
-		/*}
+		}
+		if ((getDistanceDifference(c->GetPosition(), targetEnemy->GetPosition())) > (dynamic_cast<Attacker*>(c)->GetRange())) {
+			targetEnemy = NULL;
+			free(targetEnemy);
+		} // release first element if not in range to prevent damage through own units
 		else {
-			//targetEnemy = enemy structure;
-			dynamic_cast<Saboteur*>(toplaceunit)->Attack(targetEnemy);
-		} // damage enemy structure with saboteur
-		*/
-		if (targetEnemy->GetHealth() <= 0) {
-			eliminateEnemy(targetEnemy);
-			units.remove(targetEnemy);
-		} // delete unit if dead
-	}
+			if (c != dynamic_cast<Saboteur*>(c))
+				dynamic_cast<Attacker*>(c)->Attack(targetEnemy);
+			else if (c == dynamic_cast<Saboteur*>(c) && targetEnemy != dynamic_cast<Structure*>(targetEnemy))
+				dynamic_cast<Attacker*>(c)->Attack(targetEnemy);
+			else if (dynamic_cast<Saboteur*>(c)->CanAttackStruc(targetEnemy) && targetEnemy == dynamic_cast<Structure*>(targetEnemy))
+				dynamic_cast<Saboteur*>(c)->Attack(targetEnemy);
+
+			if (targetEnemy->GetHealth() <= 0) {
+				player->AddWarTrophy(targetEnemy->GetCost());
+				eliminateEnemy(targetEnemy);
+				units.remove(targetEnemy);
+			} // delete unit if dead
+		}
+		targetEnemy = NULL;
+		free(targetEnemy);
+	}	
 } // damage infantries and structures
-
-void BattleField::eliminateEnemy(IUnit * killedunit) {
-	for (int i = 0; i < killedunit->GetSize().width; i++)
-		for (int j = 0; j < killedunit->GetSize().height; j++)
-			playarea[killedunit->GetPosition().x + i][killedunit->GetPosition().y + j] = NULL;
-	delete(killedunit);
-}
-
-void BattleField::signalAttack(IUnit * enemy) {
-	
-	setPenColour(clDarkYellow, 8);
-	selectBackColour(clDarkYellow);
-	drawRectangle(toplaceunit->GetPosition().x * CELL_SIZE,
-		toplaceunit->GetPosition().y * CELL_SIZE,
-		CELL_SIZE,
-		CELL_SIZE,
-		true
-	);
-	//Sleep(1000);
-	drawBlackCross(
-		enemy->GetPosition().x,
-		enemy->GetPosition().y,
-		enemy->GetSize().width,
-		enemy->GetSize().height
-	);
-	//Sleep(1000);
-}
 
 const bool BattleField::checkIfGameOver()
 {
 	std::list<IUnit*>::iterator it;
-	it = units.begin();
-	if ((*it)->GetHealth() <= 0)
-	{
-		winner = 1;
-		return true;
-	}
-	else
-	{
-		it++;
-		if ((*it)->GetHealth() <= 0)
+	for (it = units.begin(); it != units.end(); it++) {
+		if ((*it) == dynamic_cast<ConstructionYard*>(*it))
 		{
-			winner = 2;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-}
+			if ((*it)->GetColour() == p1->GetColour() && (*it)->GetHealth() <= 0)
+				winner = 1;
+			else if ((*it)->GetColour() == p2->GetColour() && (*it)->GetHealth() <= 0)
+				winner = 2;
 
-const bool BattleField::isDistanceValid(IUnit* source, const IUnit* destination) {
-	if(destination != nullptr)
-		if (// check if unit belongs to player
-			source->GetColour() == destination->GetColour() &&
-			// check if the structure placed is an armoury and other units are structures
-			(destination == dynamic_cast<Armoury*>(const_cast<IUnit*>(destination)) && source == dynamic_cast<UnitBuilder*>(source) ||
-			// check if the unit placed is an infantry and other units are armouries
-			(destination == dynamic_cast<Infantry*>(const_cast<IUnit*>(destination)) && source == dynamic_cast<Armoury*>(source))))
-			return true;
+			if(winner == 1 || winner == 2) return true;
+		}
+	}
 	return false;
-}
-
-Position BattleField::updatePosition(IUnit * c, int i, int j) {
-	return { c->GetPosition().x + i, c->GetPosition().y + j };
 }
 
 void BattleField::createStructure(UINT nChar) {
@@ -672,13 +645,16 @@ void BattleField::createStructure(UINT nChar) {
 	case '3': // create a defence turret
 		unitID = DEFENCE_TURRET;
 		break;
+	case '4': // create a factory
+		unitID = FACTORY;
+		break;
 	default:
 		MessageBox(getHWND(), L"Select a valid structure.", L"BattleField", MB_ICONERROR);
 		break;
 	}
 	bool setupStage = false;
 
-	if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 4) && !dynamic_cast<UnitBuilder*>(selectedunit)->CanPlaceUnit()) {
+	if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 5) && !dynamic_cast<UnitBuilder*>(selectedunit)->CanPlaceUnit()) {
 		toplaceunit = dynamic_cast<ConstructionYard*>(selectedunit)->GetUnit(
 			UNIT_ASSETS[unitID],
 			{ currentcell.x, currentcell.y },
@@ -719,25 +695,38 @@ void BattleField::createInfantry(UINT nChar) {
 	}
 }
 
-void BattleField::moveInfantry(UINT nChar) {
-	if (!isMoved && nChar == '1') {
-		// deallocate the unit from its position to move
-		isMoved = true;
-		isToPlace = true;
-		toplaceunit = selectedunit;
-		playarea[currentcell.x][currentcell.y] = NULL;
-		premovepos = { currentcell.x, currentcell.y };
+void BattleField::createVehicle(UINT nChar) {
+	switch (nChar) {
+	case '1': // create a wathog
+		unitID = WARTHOG;
+		break;
+	case '2': // create a tank
+		unitID = TANK;
+		break;
+	default:
+		MessageBox(getHWND(), L"Select a valid infantry.", L"BattleField", MB_ICONERROR);
+		break;
+	}
+
+	if (((char)nChar - '0' > 0) && ((char)nChar - '0' < 3) && !dynamic_cast<UnitBuilder*>(selectedunit)->CanPlaceUnit()) {
+		toplaceunit = dynamic_cast<Factory*>(selectedunit)->GetUnit(
+			UNIT_ASSETS[unitID],
+			{ currentcell.x, currentcell.y },
+			selectedunit->GetColour(),
+			(char)nChar
+		);
+		checkBalance();
 	}
 }
 
-void BattleField::checkBalance() {
-	if (toplaceunit->GetCost() < player->GetBalance()) {
-		player->Buy(toplaceunit->GetCost());
+void BattleField::moveUnit(UINT nChar) {
+	if (!isMoved && nChar == '1' && selectedunit->GetPosition().x == currentcell.x && selectedunit->GetPosition().y == currentcell.y) {
+		// deallocate the unit from its position to move
+		isMoved = true;
 		isToPlace = true;
-	}
-	else
-	{
-		MessageBox(getHWND(), L"Insufficient funds.", L"BattleField", MB_ICONERROR);
-		free(toplaceunit);
+		dynamic_cast<Infantry*>(selectedunit)->Move();
+		toplaceunit = selectedunit;
+		playarea[currentcell.x][currentcell.y] = NULL;
+		premovepos = { currentcell.x, currentcell.y };
 	}
 }

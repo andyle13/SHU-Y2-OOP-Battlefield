@@ -1,12 +1,11 @@
 #pragma once
-#include "Defence.h"
-class DefenceWall :
-	public Defence
+#include "UnitBuilder.h"
+class Factory :
+	public UnitBuilder
 {
 public:
-	DefenceWall(const wchar_t *f, const Position &p, const int & c);
-	~DefenceWall();
-
+	Factory(const wchar_t *f, const Position &p, const int c);
+	~Factory();
 
 	const int GetMaxHealth() const;
 	const std::string GetName() const;
@@ -17,10 +16,12 @@ public:
 
 	void RestoreActions();
 
+	IUnit * GetUnit(const wchar_t * f, const Position & p, const int & c, const char & id);
+
 private:
 	const wchar_t* filename;
 	const int maxhealth = 200;
-	const std::string name = "Defence Wall";
-	const std::string option = "A defence wall whose purpose is to obstruct enemy movements.";
+	const std::string name = "Factory";
+	const std::string option = "1) Create Truck\n2) Create Tank";
 };
 

@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Units\Structure\Defense">
       <UniqueIdentifier>{76720620-9389-4b90-8958-c50ac940605a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Units\Vehicle">
+      <UniqueIdentifier>{418672cb-512c-4d90-8a1f-c39fb9577008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Units\Vehicle">
+      <UniqueIdentifier>{6ac8efe5-2239-4a27-80af-ea7daef4ece1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -114,6 +120,18 @@
     <ClCompile Include="DefenceTurret.cpp">
       <Filter>Source Files\Units\Structure\Defense</Filter>
     </ClCompile>
+    <ClCompile Include="Vehicle.cpp">
+      <Filter>Source Files\Units\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank.cpp">
+      <Filter>Source Files\Units\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Warthog.cpp">
+      <Filter>Source Files\Units\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Source Files\Units\Structure\UnitBuilder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IUnit.h">
@@ -169,6 +187,18 @@
     </ClInclude>
     <ClInclude Include="DefenceTurret.h">
       <Filter>Header Files\Units\Structure\Defense</Filter>
+    </ClInclude>
+    <ClInclude Include="Vehicle.h">
+      <Filter>Header Files\Units\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.h">
+      <Filter>Header Files\Units\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Warthog.h">
+      <Filter>Header Files\Units\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Header Files\Units\Structure\UnitBuilder</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,7 +14,9 @@ public:
 	const int GetColour();
 	const wchar_t GetName();
 	const int GetBalance();
-	void Buy(const int price);
+	void Buy(const int & price);
+
+	void AddWarTrophy(const int & prize);
 
 
 private:

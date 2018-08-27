@@ -3,7 +3,7 @@
 class Mechanic : public Healer
 {
 public:
-	Mechanic(const wchar_t *f, const Position &p, const int c);
+	Mechanic(const wchar_t *f, const Position &p, const int & c);
 	~Mechanic();
 
 	const int GetMaxHealth() const;
@@ -19,5 +19,5 @@ private:
 	const wchar_t* filename;
 	const int maxhealth = 60;
 	const std::string name = "Mechanic";
-	const std::string option = "Move mechanic or right-click to deselect";
+	const std::string option = "Repair: Place the mechanic on a friendly structure to repair.";
 };

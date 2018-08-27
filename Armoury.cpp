@@ -4,23 +4,19 @@
 #include "Mechanic.h"
 #include "Saboteur.h"
 
-Armoury::Armoury(const wchar_t *f, const Position &p, const int c)
-	: UnitBuilder(p, c, 200, 250), filename(f) {}
+Armoury::Armoury(const wchar_t *f, const Position &p, const int & c)
+	: UnitBuilder(p, c, 200, 250), IUnit(p, { 2,2 }, c, 200, 250), filename(f) {}
 
 Armoury::~Armoury() {}
 
 const int Armoury::GetMaxHealth() const { return maxhealth; }
 const std::string Armoury::GetName() const { return name; }
 const std::string Armoury::GetOption() const { return option; }
-const Size & Armoury::GetSize() const { return size; }
+const Size & Armoury::GetSize() const { return UnitBuilder::size; }
 const wchar_t * Armoury::GetFilename() const { return filename; }
 const int & Armoury::GetColour() const { return IUnit::GetColour(); }
 
-void Armoury::RestoreActions() {
-	hasPlaced = false;
-}
-
-IUnit * Armoury::GetUnit(const wchar_t * f, const Position & p, const int c, char id) {
+IUnit * Armoury::GetUnit(const wchar_t * f, const Position & p, const int & c, const char & id) {
 	switch (id)
 	{
 	case '1':

@@ -4,7 +4,7 @@
 class Armoury :	public UnitBuilder
 {
 public:
-	Armoury(const wchar_t *f, const Position &p, const int c);
+	Armoury(const wchar_t *f, const Position &p, const int & c);
 	~Armoury();
 
 	const int GetMaxHealth() const;
@@ -16,7 +16,7 @@ public:
 
 	void RestoreActions();
 
-	IUnit * GetUnit(const wchar_t * f, const Position & p, const int c, char id);
+	IUnit * GetUnit(const wchar_t * f, const Position & p, const int & c, const char & id);
 
 private:
 	const wchar_t* filename;
@@ -25,3 +25,6 @@ private:
 	const std::string option = "1) Create Soldier\n2) Create Medic\n3) Create Mechanic\n4) Create Saboteur";
 };
 
+inline void Armoury::RestoreActions() {
+	hasPlaced = false;
+}

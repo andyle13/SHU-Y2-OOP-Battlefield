@@ -12,7 +12,7 @@ struct Size {
 class IUnit
 {
 public:
-	IUnit(const Position & p, const int c, int h, int cos);
+	IUnit(const Position & p, const Size & s, const int & c, int h, const int & cos);
 	virtual ~IUnit() = 0;
 
 	virtual void RestoreActions() = 0;

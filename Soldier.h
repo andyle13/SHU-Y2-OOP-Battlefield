@@ -3,7 +3,7 @@
 class Soldier :	public Attacker
 {
 public:
-	Soldier(const wchar_t *f, const Position &p, const int c);
+	Soldier(const wchar_t *f, const Position &p, const int & c);
 	~Soldier();
 
 	const int GetMaxHealth() const;
@@ -12,7 +12,8 @@ public:
 	const Size & GetSize() const;
 	const wchar_t * GetFilename() const;
 	const int & GetColour() const;
-	const int GetStrength() const;
+	const int & GetRange() const;
+	const int & GetStrength() const;
 
 	void RestoreActions();
 	void Attack(IUnit * enemy);
@@ -21,7 +22,12 @@ public:
 
 private:
 	const wchar_t* filename;
-	const int maxhealth = 150;
+	int maxhealth = 150;
 	const std::string name = "Soldier";
 	const std::string option = "Attack: Move this unit at least two spaces away from an opponent.";
 };
+
+inline void Soldier::RestoreActions() {
+	hasAttacked = false;
+	moves = 2;
+}

@@ -12,7 +12,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine, int show)
 {
 #ifdef _DEBUG
-//  _CrtSetBreakAlloc(101);
+  //_CrtSetBreakAlloc(101);
   _onexit(_CrtDumpMemoryLeaks);
 #endif
 

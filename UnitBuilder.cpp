@@ -1,7 +1,7 @@
 #include "UnitBuilder.h"
 
-UnitBuilder::UnitBuilder(const Position &p, const int c, int h, int cost)
-	: Structure(p, c, h, cost), size({ 2,2 }), hasPlaced(false) {}
+UnitBuilder::UnitBuilder(const Position &p, const int & c, int h, const int & cost)
+	: Structure(p, { 2,2 }, c, h, cost), size({ 2,2 }), hasPlaced(false) {}
 
 
 UnitBuilder::~UnitBuilder() {}

@@ -9,8 +9,11 @@ const int Player::GetColour() { return colour; }
 const wchar_t Player::GetName() { return playerName; }
 const int Player::GetBalance() { return balance; }
 
-void Player::Buy(const int price) 
+void Player::Buy(const int & price) 
 {
 	balance -= price;
 }
-	
+
+void Player::AddWarTrophy(const int & prize) {
+	balance += prize;
+}
